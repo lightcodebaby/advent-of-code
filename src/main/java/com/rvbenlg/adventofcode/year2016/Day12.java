@@ -42,7 +42,8 @@ public class Day12 {
     private HashMap<Character, Integer> values = new HashMap<>();
 
     public void solve() throws IOException {
-        part1();
+//        part1();
+        part2();
     }
 
     private void part1() throws IOException {
@@ -53,6 +54,18 @@ public class Day12 {
             currentInstruction += followInstruction(instruction);
         }
         System.out.println("Part 1 solution: " + values.get('a'));
+    }
+
+    private void part2() throws IOException {
+        List<String> lines = Utilities.readInput("year2016/day12.txt");
+        int currentInstruction = 0;
+        String newInstruction = "cpy 1 c";
+        followInstruction(newInstruction);
+        while (currentInstruction < lines.size()) {
+            String instruction = lines.get(currentInstruction);
+            currentInstruction += followInstruction(instruction);
+        }
+        System.out.println("Part 2 solution: " + values.get('a'));
     }
 
     private int followInstruction(String instruction) {

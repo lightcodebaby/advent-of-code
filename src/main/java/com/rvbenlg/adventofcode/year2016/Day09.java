@@ -3,6 +3,7 @@ package com.rvbenlg.adventofcode.year2016;
 import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Day09 {
@@ -59,34 +60,12 @@ public class Day09 {
         List<String> lines = Utilities.readInput("year2016/day09.txt");
         long result = 0;
         for (String line : lines) {
-            result += getTotalLength(line);
+            String data = line;
+//            result = totalLength(data);
         }
         System.out.println("Part 2 solution: " + result);
     }
 
-    private long getTotalLength(String compressed) {
-        long result = 0L;
-        boolean multiply = false;
-        int multiplier = 1;
-        for(int i = 0; i < compressed.length(); i++) {
-            if(!isMarker(compressed, i)) {
-                if(multiply) {
-                    result += multiplier;
-                }
-                result++;
-                multiplier = 1;
-                multiply = false;
-            } else {
-                String marker = getMarker(compressed, i);
-                multiply = true;
-                int howManyCharacters = howManyCharactersToRepeat(marker);
-                int howManyTimes = howManyTimesToRepeat(marker);
-                multiplier *= (howManyCharacters * howManyTimes);
-                i = whereMarkerEnds(compressed, i);
-            }
-        }
-        return result;
-    }
 
     private String decompress(String compressed) {
         StringBuilder decompressed = new StringBuilder();
@@ -103,6 +82,23 @@ public class Day09 {
         }
         return decompressed.toString();
     }
+
+    private String joinMarkers(String compressed) {
+        List<Integer> markersIndexes = new ArrayList<>();
+        for(int i = 0; i < compressed.length(); i++) {
+            if(isMarker(compressed, i)) {
+                int markerEnd = whereMarkerEnds(compressed, i);
+
+                i = whereMarkerEnds(compressed, i);
+
+            }
+        }
+        while(compressed.contains(")(")) {
+//            compressed.in
+        }
+        return "";
+    }
+
 
     private String whatToAppend(String compressed, int position) {
         StringBuilder result = new StringBuilder();
@@ -161,18 +157,20 @@ public class Day09 {
     }
 
     private int firstMarker(String compressed) {
-        int index = -1;
         boolean found = false;
-        if(hasMarker(compressed)) {
-            while (!found && compressed.contains("(")) {
-                index = compressed.indexOf("(");
-                compressed = compressed.substring(compressed.indexOf("(") + 1);
-                if(Utilities.isNumber(String.valueOf(compressed.charAt(0)))) {
-                    found = true;
-                }
+        int markerPosition = compressed.indexOf("(");
+        while (!found && compressed.substring(markerPosition + 1).contains("(")) {
+            if (Utilities.isNumber(String.valueOf(compressed.charAt(markerPosition + 1)))) {
+                found = true;
+            } else {
+                markerPosition = compressed.indexOf("(", markerPosition + 1);
             }
         }
-        return index;
+        if (!found) {
+            markerPosition = -1;
+        }
+        return markerPosition;
     }
+
 
 }

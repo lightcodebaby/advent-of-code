@@ -1,8 +1,11 @@
 package com.rvbenlg.adventofcode.utils;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,14 @@ public class Utilities {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static String md5(String input) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(input.getBytes());
+        byte[] digest = md.digest();
+        String hash = DatatypeConverter.printHexBinary(digest);
+        return hash.toLowerCase();
     }
 
 }
