@@ -4,7 +4,9 @@ import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Day09 {
 
@@ -61,9 +63,31 @@ public class Day09 {
         long result = 0;
         for (String line : lines) {
             String data = line;
-//            result = totalLength(data);
+            result = totalLength(data);
         }
         System.out.println("Part 2 solution: " + result);
+    }
+
+    private long totalLength(String data) {
+        int[] values = getValuesArray(data);
+        long result = 0;
+        for(int i = 0; i < values.length; i++) {
+            if(isMarker(data, i)) {
+                String marker = getMarker(data, i);
+                int howManyCharactersToRepeat = howManyCharactersToRepeat(marker);
+                int howManyTimesToRepeat = howManyTimesToRepeat(marker);
+                int markerLength = marker.length() + 2;
+                for(int j = 0; j < markerLength; j++) {
+                    values[i + j] = 0;
+                }
+                for(int j = 0; j < howManyCharactersToRepeat; j++) {
+                    values[i + markerLength + j] *= howManyTimesToRepeat;
+                }
+            } else {
+                result += values[i];
+            }
+        }
+        return result;
     }
 
 
@@ -81,22 +105,6 @@ public class Day09 {
             }
         }
         return decompressed.toString();
-    }
-
-    private String joinMarkers(String compressed) {
-        List<Integer> markersIndexes = new ArrayList<>();
-        for(int i = 0; i < compressed.length(); i++) {
-            if(isMarker(compressed, i)) {
-                int markerEnd = whereMarkerEnds(compressed, i);
-
-                i = whereMarkerEnds(compressed, i);
-
-            }
-        }
-        while(compressed.contains(")(")) {
-//            compressed.in
-        }
-        return "";
     }
 
 
@@ -124,8 +132,7 @@ public class Day09 {
     }
 
     private String getMarker(String compressed, int position) {
-        String marker = compressed.substring(position + 1);
-        marker = marker.substring(0, marker.indexOf(")"));
+        String marker = compressed.substring(position + 1, compressed.indexOf(")", position + 1));
         return marker;
     }
 
@@ -145,32 +152,10 @@ public class Day09 {
         return subsequent;
     }
 
-    private boolean hasMarker(String compressed) {
-        boolean found = false;
-        while (!found && compressed.contains("(")) {
-            compressed = compressed.substring(compressed.indexOf("(") + 1);
-            if (Utilities.isNumber(String.valueOf(compressed.charAt(0)))) {
-                found = true;
-            }
-        }
-        return found;
+    private int[] getValuesArray(String data) {
+        int[] result = new int[data.length()];
+        Arrays.fill(result, 1);
+        return result;
     }
-
-    private int firstMarker(String compressed) {
-        boolean found = false;
-        int markerPosition = compressed.indexOf("(");
-        while (!found && compressed.substring(markerPosition + 1).contains("(")) {
-            if (Utilities.isNumber(String.valueOf(compressed.charAt(markerPosition + 1)))) {
-                found = true;
-            } else {
-                markerPosition = compressed.indexOf("(", markerPosition + 1);
-            }
-        }
-        if (!found) {
-            markerPosition = -1;
-        }
-        return markerPosition;
-    }
-
 
 }

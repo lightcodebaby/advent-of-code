@@ -7,25 +7,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Day23 {
+public class Day25 {
 
     private HashMap<Character, Integer> values = new HashMap<>();
     private List<String> instructions = new ArrayList<>();
+    int firstValue = 0;
+    int lastPrinted = -1;
 
-    public void solve() throws IOException {
+    public void solve() throws IOException, InterruptedException {
         part1();
     }
 
-    private void part1() throws IOException {
-        instructions = Utilities.readInput("year2016/day23.txt");
+    private void part1() throws IOException, InterruptedException {
+        instructions = Utilities.readInput("year2016/day25.txt");
+        resetVariables();
+        instructions.set(0, "cpy " + firstValue + " a");
         int currentInstruction = 0;
         while (currentInstruction < instructions.size()) {
             currentInstruction += followInstruction(currentInstruction);
         }
-        System.out.println("Part 1 solution: " + values.get('a'));
     }
 
-    private int followInstruction(int currentInstruction) {
+
+    private int followInstruction(int currentInstruction) throws InterruptedException, IOException {
         int result = 1;
         String instruction = instructions.get(currentInstruction);
         if (isCopyInstruction(instruction)) {
@@ -38,8 +42,16 @@ public class Day23 {
             if (checkBeforeJumping(instruction)) {
                 result = howManyToJump(instruction);
             }
-        } else if (isToggleInstruction(instruction)) {
-            followToggleInstruction(instruction, currentInstruction);
+        } else if (isTransmitInstruction(instruction)) {
+            int whatToPrint = values.get(whatToTransmit(instruction));
+            if(whatToPrint == lastPrinted) {
+                refreshFirstValue();
+                System.out.println("Refreshing first value. New value: " + firstValue);
+                part1();
+            } else {
+                lastPrinted = whatToPrint;
+            }
+
         }
         return result;
     }
@@ -60,24 +72,6 @@ public class Day23 {
     private void followDecreaseInstruction(String instruction) {
         char whatToIncrease = whatToDecrease(instruction);
         values.put(whatToIncrease, values.get(whatToIncrease) - 1);
-    }
-
-    private void followToggleInstruction(String instruction, int currentInstruction) {
-        int howFarToToggle = howFarToToggle(instruction);
-        if(currentInstruction + howFarToToggle < instructions.size()) {
-            String instructionToToggle = instructions.get(currentInstruction + howFarToToggle);
-            if (isIncreaseInstruction(instructionToToggle)) {
-                instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("inc ", "dec "));
-            } else if (isDecreaseInstruction(instructionToToggle)) {
-                instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("dec ", "inc "));
-            } else if (isToggleInstruction(instructionToToggle)) {
-                instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("tgl ", "inc "));
-            } else if(isCopyInstruction(instructionToToggle)) {
-                instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("cpy ", "jnz "));
-            } else if (isJumpInstruction(instructionToToggle)) {
-                instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("jnz ", "cpy "));
-            }
-        }
     }
 
     private boolean isCopyInstruction(String instruction) {
@@ -118,6 +112,14 @@ public class Day23 {
         return instruction.startsWith("jnz ");
     }
 
+    private boolean isTransmitInstruction(String instruction) {
+        return instruction.startsWith("out ");
+    }
+
+    private char whatToTransmit(String instruction) {
+        return instruction.split(" ")[1].charAt(0);
+    }
+
     private boolean checkBeforeJumping(String instruction) {
         boolean jump = false;
         if (Utilities.isNumber(instruction.split(" ")[1])) {
@@ -141,12 +143,13 @@ public class Day23 {
         return result;
     }
 
-    private boolean isToggleInstruction(String instruction) {
-        return instruction.startsWith("tgl ");
+    private void resetVariables() {
+        values = new HashMap<>();
     }
 
-    private int howFarToToggle(String instruction) {
-        return values.get(instruction.split(" ")[1].charAt(0));
+    private void refreshFirstValue() {
+        firstValue++;
+        lastPrinted = -1;
     }
 
 }

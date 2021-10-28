@@ -2,14 +2,10 @@ package com.rvbenlg.adventofcode.year2016;
 
 import com.rvbenlg.adventofcode.utils.Utilities;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 public class Day14 {
 
@@ -60,60 +56,41 @@ public class Day14 {
     Eventually, index 22551 produces the 64th key (triple fff with matching fffff at index 22859.
     Given the actual salt in your puzzle input and using 2016 extra MD5 calls of key stretching, what index now produces your 64th one-time pad key?
      */
-
-    List<Integer> indexes = new ArrayList<>();
     List<String> hashes = new ArrayList<>();
-    HashMap<Character, Integer> three = new HashMap();
-    HashMap<Character, Integer> five = new HashMap<>();
 
     public void solve() throws IOException, NoSuchAlgorithmException {
-//        part1();
+        part1();
         part2();
     }
 
     private void part1() throws IOException, NoSuchAlgorithmException {
         resetVariables();
         List<String> lines = Utilities.readInput("year2016/day14.txt");
+        int result = 0;
         for(String line : lines) {
             generateHashes(line, false);
-            checkIndexes();
+            result = checkIndexes();
         }
-        System.out.println("Part 1 solution: " + indexes.get(63));
+        System.out.println("Part 1 solution: " + result);
     }
 
     private void part2() throws IOException, NoSuchAlgorithmException {
+        resetVariables();
         List<String> lines = Utilities.readInput("year2016/day14.txt");
+        int result = 0;
         for(String line : lines) {
             generateHashes(line, true);
-            checkHashes();
+            result = checkIndexes();
         }
-        System.out.println("Part 1 solution: " + indexes.get(63));
-    }
-
-    private void checkHashes() {
-        for(int i = 0; i < hashes.size(); i++) {
-            String hash = hashes.get(i);
-            char threeTimes = sameCharacterThreeTimes(hash);
-            char fiveTimes = sameCharacterFiveTimes(hash);
-            if(threeTimes != '*') {
-                if(!three.containsKey(threeTimes) || fiveTimes != '*') {
-                    three.put(threeTimes, i);
-                }
-            }
-            if (fiveTimes != '*') {
-                if(three.containsKey(fiveTimes) && three.get(fiveTimes) != i && three.get(fiveTimes) > i - 1000) {
-                    five.put(fiveTimes, i);
-                }
-            }
-        }
+        System.out.println("Part 1 solution: " + result);
     }
 
     private void generateHashes(String salt, boolean part2) throws NoSuchAlgorithmException {
-        for(int i = 0; i < 2300000; i++){
+        for(int i = 0; i < 22000; i++){
             String auxSalt = salt + i;
             String hash = Utilities.md5(auxSalt);
             if(part2) {
-                for(int j = 0; i < 2016; i++) {
+                for(int j = 0; j < 2016; j++) {
                     hash = Utilities.md5(hash);
                 }
             }
@@ -121,17 +98,22 @@ public class Day14 {
         }
     }
 
-    private void checkIndexes() {
-        int count = 0;
-        while(indexes.size() < 64) {
-            String hash = hashes.get(count);
-            char c = sameCharacterThreeTimes(hash);
-            int auxCount = count;
-            if(c != '*' && hashes.stream().anyMatch(s -> c == sameCharacterFiveTimes(s) && hashes.indexOf(s) < auxCount + 1000 && hashes.indexOf(s) > auxCount)) {
-                indexes.add(count);
+    private int checkIndexes() {
+        int lastIndex = 0;
+        int indexes = 0;
+        for(int i = 0; i < hashes.size() && indexes < 64; i++) {
+            String hash = hashes.get(i);
+            char threeTimes = sameCharacterThreeTimes(hash);
+            if(threeTimes != '*') {
+                int finalI = i;
+                List<String> nextThousandHashes = hashes.subList(i + 1, i + 1001);
+                if(nextThousandHashes.stream().anyMatch(s -> sameCharacterFiveTimes(s) == threeTimes && nextThousandHashes.indexOf(s) < finalI + 1000)) {
+                    indexes++;
+                    lastIndex = i;
+                }
             }
-            count++;
         }
+        return lastIndex;
     }
 
     private char sameCharacterThreeTimes(String string) {
@@ -160,9 +142,6 @@ public class Day14 {
 
     private void resetVariables() {
         hashes = new ArrayList<>();
-        indexes = new ArrayList<>();
-        three = new HashMap<>();
-        five = new HashMap<>();
     }
 
 }
