@@ -140,6 +140,8 @@ public class Day11 {
                 checkOnlyMicrochips(status);
                 checkGeneratorsAndMicrochips(status);
                 checkedStatuses.add(status.toHash());
+                optimizePairs(status);
+                statuses.removeIf(status1 -> checkedStatuses.contains(status1.toHash()));
             }
             steps++;
         }
@@ -226,15 +228,28 @@ public class Day11 {
     }
 
     private void optimizePairs(Status nextStatus) {
-        for(Floor floor : nextStatus.floors) {
-            for(String microchip : floor.microchips) {
-                if(floor.generators.contains(microchip)) {
-                    Status duplicateStatus = duplicateStatus(nextStatus);
-                    int generatorIndex = duplicateStatus.floors.get(floor.number).generators.indexOf(microchip);
-                    int microchipIndex = duplicateStatus.floors.get(floor.number).microchips.indexOf(microchip);
-                    for(String element : elements) {
-                        duplicateStatus.floors.get(floor.number).generators.set(generatorIndex, element);
-                        duplicateStatus.floors.get(floor.number).microchips.set(floor.microchips.indexOf(microchip), element);
+        for(int i = 0; i < elements.size(); i++) {
+            for(int j = 0; j < elements.size(); j++) {
+                if(i != j) {
+                    Status auxStatus = duplicateStatus(nextStatus);
+                    for(Floor floor : auxStatus.floors) {
+                        for(int k = 0; k < floor.generators.size(); k++) {
+                            if(floor.generators.get(k).equals(elements.get(i))) {
+                                floor.generators.set(k, elements.get(j));
+                            } else if (floor.generators.get(k).equals(elements.get(j))) {
+                                floor.generators.set(k, elements.get(i));
+                            }
+                        }
+                        for(int k = 0; k < floor.microchips.size(); k++ ){
+                            if(floor.microchips.get(k).equals(elements.get(i))) {
+                                floor.microchips.set(k, elements.get(j));
+                            } else if(floor.microchips.get(k).equals(elements.get(j))) {
+                                floor.microchips.set(k, elements.get(i));
+                            }
+                        }
+                    }
+                    if(!checkedStatuses.contains(auxStatus.toHash())) {
+                        checkedStatuses.add(auxStatus.toHash());
                     }
                 }
             }
