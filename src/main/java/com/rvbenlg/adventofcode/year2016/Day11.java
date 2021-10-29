@@ -3,9 +3,7 @@ package com.rvbenlg.adventofcode.year2016;
 import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Day11 {
@@ -114,9 +112,11 @@ public class Day11 {
      */
 
     private List<String> input = new ArrayList<>();
-    private List<String> checkedStatuses = new ArrayList<>();
+    private Set<String> checkedStatuses = new HashSet<>();
     private List<Status> statuses = new ArrayList<>();
-    private List<String> elements = new ArrayList<>();
+    private int numberOfElements = 10;
+    private String[] elements = {"polonium", "thulium", "promethium", "ruthenium", "cobalt"};
+    private int minFloor = 0;
 
     public void solve() throws IOException {
         part1();
@@ -124,153 +124,181 @@ public class Day11 {
 
     private void part1() throws IOException {
         input = Utilities.readInput("year2016/day11.txt");
-        int result = useElevator();
-        System.out.println("Part 1 solution: " + result);
+        useElevator();
     }
 
-    private int useElevator() {
+    private void useElevator() {
         Status initStatus = getInitStatus();
-        fillElements(initStatus);
-        statuses.add(getInitStatus());
+        statuses.add(initStatus);
+        boolean ended = false;
         int steps = 0;
-        while (statuses.stream().noneMatch(status -> status.floors.stream().anyMatch(floor -> floor.microchips.size() == 5 && floor.generators.size() == 5 && floor.number == 3))) {
-            List<Status> toCheck = statuses.stream().filter(status -> !checkedStatuses.contains(status.toHash())).collect(Collectors.toList());
-            for (Status status : toCheck) {
-                checkOnlyGenerators(status);
-                checkOnlyMicrochips(status);
-                checkGeneratorsAndMicrochips(status);
-                checkedStatuses.add(status.toHash());
-                optimizePairs(status);
-                statuses.removeIf(status1 -> checkedStatuses.contains(status1.toHash()));
+        while (!ended) {
+            List<Status> unchecked = statuses.stream().filter(status -> !status.checked).collect(Collectors.toList());
+            for (Status status : unchecked) {
+                if (!status.checked) {
+                    ended = checkIfEnded(status);
+                    checkMinFloor();
+                    move(status);
+                    checkedStatuses.add(status.toHash());
+                    status.checked = true;
+                }
             }
             steps++;
         }
-        return steps;
     }
 
-    private void checkGeneratorsAndMicrochips(Status currentStatus) {
-        for (String generator : currentStatus.floors.get(currentStatus.elevator).generators) {
-            List<String> generatorsToBring = new ArrayList<>();
-            generatorsToBring.add(generator);
-            for (String microchip : currentStatus.floors.get(currentStatus.elevator).microchips) {
-                List<String> microchipsToBring = new ArrayList<>();
-                microchipsToBring.add(microchip);
-                if (canGoUp(currentStatus, generatorsToBring, microchipsToBring)) {
-                    Status nextStatus = goUp(currentStatus, generatorsToBring, microchipsToBring);
-                    if (!previousStatus(nextStatus)) {
-                        statuses.add(nextStatus);
-                    }
-                }
-            }
+    private void checkMinFloor() {
+        if (statuses.stream().anyMatch(status -> status.toHash().substring(1).startsWith("0000000000"))) {
+            minFloor = 1;
+        }
+        if (statuses.stream().anyMatch(status -> status.toHash().substring(1).startsWith("00000000000000000000"))) {
+            minFloor = 2;
         }
     }
 
-    private void checkOnlyMicrochips(Status currentStatus) {
-        List<String> microchips = currentStatus.floors.get(currentStatus.elevator).microchips;
-        for (int i = 0; i < microchips.size(); i++) {
-            String microchip = microchips.get(i);
-            for (int j = i + 1; j < microchips.size(); j++) {
-                String microchip2 = microchips.get(j);
-                List<String> microchipsToBring = new ArrayList<>();
-                microchipsToBring.add(microchip);
-                microchipsToBring.add(microchip2);
-                if (canGoUp(currentStatus, new ArrayList<>(), microchipsToBring)) {
-                    Status nextStatus = goUp(currentStatus, new ArrayList<>(), microchipsToBring);
-                    if (!previousStatus(nextStatus)) {
-                        statuses.add(nextStatus);
-                    }
-                }
-            }
-            if (canGoUp(currentStatus, new ArrayList<>(), Collections.singletonList(microchip))) {
-                Status nextStatus = goUp(currentStatus, new ArrayList<>(), Collections.singletonList(microchip));
-                if (!previousStatus(nextStatus)) {
-                    statuses.add(nextStatus);
-                }
-            }
-            if (canGoDown(currentStatus, new ArrayList<>(), Collections.singletonList(microchip))) {
-                Status nextStatus = goDown(currentStatus, new ArrayList<>(), Collections.singletonList(microchip));
-                if (!previousStatus(nextStatus)) {
-                    statuses.add(nextStatus);
-                }
-            }
-        }
+    private boolean checkIfEnded(Status status) {
+        return status.toHash().equals("40000000000000000000000000000001111111111");
     }
 
-    private void checkOnlyGenerators(Status currentStatus) {
-        List<String> generators = currentStatus.floors.get(currentStatus.elevator).generators;
-        for (int i = 0; i < generators.size(); i++) {
-            String generator = generators.get(i);
-            for (int j = i + 1; j < generators.size(); j++) {
-                String generator2 = generators.get(j);
-                List<String> generatorsToBring = new ArrayList<>();
-                generatorsToBring.add(generator);
-                generatorsToBring.add(generator2);
-                if (canGoUp(currentStatus, generatorsToBring, new ArrayList<>())) {
-                    Status nextStatus = goUp(currentStatus, generatorsToBring, new ArrayList<>());
-                    if (!previousStatus(nextStatus)) {
-                        statuses.add(nextStatus);
-                    }
-                }
-            }
-            if (canGoUp(currentStatus, Collections.singletonList(generator), new ArrayList<>())) {
-                Status nextStatus = goUp(currentStatus, Collections.singletonList(generator), new ArrayList<>());
-                if (!previousStatus(nextStatus)) {
-                    statuses.add(nextStatus);
-                }
-            }
-            if (canGoDown(currentStatus, Collections.singletonList(generator), new ArrayList<>())) {
-                Status nextStatus = goDown(currentStatus, Collections.singletonList(generator), new ArrayList<>());
-                if (!previousStatus(nextStatus)) {
-                    statuses.add(nextStatus);
-                }
-            }
-        }
-    }
-
-    private void optimizePairs(Status nextStatus) {
-        for(int i = 0; i < elements.size(); i++) {
-            for(int j = 0; j < elements.size(); j++) {
-                if(i != j) {
-                    Status auxStatus = duplicateStatus(nextStatus);
-                    for(Floor floor : auxStatus.floors) {
-                        for(int k = 0; k < floor.generators.size(); k++) {
-                            if(floor.generators.get(k).equals(elements.get(i))) {
-                                floor.generators.set(k, elements.get(j));
-                            } else if (floor.generators.get(k).equals(elements.get(j))) {
-                                floor.generators.set(k, elements.get(i));
-                            }
-                        }
-                        for(int k = 0; k < floor.microchips.size(); k++ ){
-                            if(floor.microchips.get(k).equals(elements.get(i))) {
-                                floor.microchips.set(k, elements.get(j));
-                            } else if(floor.microchips.get(k).equals(elements.get(j))) {
-                                floor.microchips.set(k, elements.get(i));
-                            }
+    private void move(Status status) {
+        Floor floor = status.floors[status.elevator];
+        int[] indexes = new int[2];
+        for (int i = 0; i < floor.elements.length; i++) {
+            boolean movedUp = false;
+            boolean movedDown = false;
+            if (floor.elements[i] != 0) {
+                indexes[0] = i;
+                indexes[1] = -1;
+                movedDown = moveDown(status, indexes);
+                for (int j = i + 1; j < floor.elements.length; j++) {
+                    if (floor.elements[j] != 0) {
+                        indexes[1] = j;
+                        movedUp = moveUp(status, indexes);
+                        if (!movedDown) {
+                            moveDown(status, indexes);
                         }
                     }
-                    if(!checkedStatuses.contains(auxStatus.toHash())) {
-                        checkedStatuses.add(auxStatus.toHash());
-                    }
+                }
+                if (!movedUp) {
+                    moveUp(status, indexes);
                 }
             }
         }
     }
 
-    private boolean previousStatus(Status nextStatus) {
-        boolean previousStatus = false;
-        if (statuses.stream().anyMatch(status -> status.toHash().equals(nextStatus.toHash()))) {
-            previousStatus = true;
+    private void removeElements(Status status, int[] indexes) {
+        for (int index : indexes) {
+            if (index != -1) {
+                status.floors[status.elevator].elements[index] = 0;
+            }
         }
-        return previousStatus;
     }
 
-    private boolean canGoUp(Status status, List<String> generators, List<String> microchips) {
+    private boolean moveUp(Status status, int[] indexes) {
+        boolean result = false;
+        if (status.elevator < 3) {
+            Status auxStatus = duplicate(status);
+            moveElementsUp(auxStatus, indexes);
+            auxStatus.elevator++;
+            result = !checkedStatuses.contains(auxStatus.toHash()) && isValid(auxStatus);
+            if (result) {
+                statuses.add(auxStatus);
+            }
+        }
+        return result;
+    }
+
+    private boolean moveDown(Status status, int[] indexes) {
+        boolean result = false;
+        if (status.elevator > 0) {
+            Status auxStatus = duplicate(status);
+            moveElementsDown(auxStatus, indexes);
+            auxStatus.elevator--;
+            result = !checkedStatuses.contains(auxStatus.toHash()) && isValid(auxStatus);
+            if (result) {
+                statuses.add(auxStatus);
+            }
+        }
+        return result;
+    }
+
+    private void moveElementsUp(Status status, int[] indexes) {
+        removeElements(status, indexes);
+        for (int index : indexes) {
+            if (index != -1) {
+                status.floors[status.elevator + 1].elements[index] = 1;
+            }
+        }
+    }
+
+    private void moveElementsDown(Status status, int[] indexes) {
+        removeElements(status, indexes);
+        for (int index : indexes) {
+            if (index != -1) {
+                status.floors[status.elevator - 1].elements[index] = 1;
+            }
+        }
+    }
+
+    private boolean areEquivalent(Status status1, Status status2) {
+        List<Status> equivalent = equivalents(status1);
+        return equivalent.stream().map(Status::toHash).collect(Collectors.toList()).contains(status2.toHash());
+    }
+
+    private Status duplicate(Status status) {
+        int elevator = status.elevator;
+        Floor[] floors = new Floor[status.floors.length];
+        for (int i = 0; i < floors.length; i++) {
+            Floor floor = status.floors[i];
+            Floor auxFloor = new Floor(floor.number);
+            int[] auxElements = new int[floor.elements.length];
+            for (int j = 0; j < floor.elements.length; j++) {
+                auxElements[j] = floor.elements[j];
+            }
+            auxFloor.elements = auxElements;
+            floors[i] = auxFloor;
+        }
+        return new Status(elevator, floors);
+    }
+
+    private List<Status> equivalents(Status status) {
+        List<Status> statuses = new ArrayList<>();
+        for (int i = 0; i < numberOfElements; i += 2) {
+            for (int j = i + 2; j < numberOfElements; j += 2) {
+                Status auxStatus = duplicate(status);
+                Floor[] floors = status.floors;
+                for (Floor floor : floors) {
+                    int auxValue = floor.elements[i];
+                    int auxValue2 = floor.elements[i + 1];
+                    floor.elements[i] = floor.elements[j];
+                    floor.elements[i + 1] = floor.elements[j + 1];
+                    floor.elements[j] = auxValue;
+                    floor.elements[j + 1] = auxValue2;
+                }
+                statuses.add(auxStatus);
+            }
+        }
+        return statuses;
+    }
+
+    private boolean isValid(Status status) {
         boolean result = true;
-        if (status.elevator != 3) {
-            Floor origin = status.floors.get(status.elevator);
-            Floor destination = status.floors.get(status.elevator + 1);
-            if (!isValidOrigin(origin, generators, microchips) || !isValidDestination(destination, generators, microchips)) {
-                result = false;
+        if(statuses.stream().noneMatch(status1 -> areEquivalent(status1, status))) {
+            for (int j = 0; j < status.floors.length; j++) {
+                Floor floor = status.floors[j];
+                int[] elements = floor.elements;
+                boolean generators = false;
+                boolean notProtectedMicrochips = false;
+                for (int i = 0; i < elements.length; i++) {
+                    if (i % 2 == 0 && elements[i] == 1) {
+                        generators = true;
+                    } else if (i % 2 != 0 && elements[i] == 1 && elements[i - 1] == 0) {
+                        notProtectedMicrochips = true;
+                    }
+                }
+                if (generators && notProtectedMicrochips) {
+                    result = false;
+                }
             }
         } else {
             result = false;
@@ -278,78 +306,12 @@ public class Day11 {
         return result;
     }
 
-    private boolean canGoDown(Status status, List<String> generators, List<String> microchips) {
-        boolean result = true;
-        if (status.elevator != 0) {
-            Floor origin = status.floors.get(status.elevator);
-            Floor destination = status.floors.get(status.elevator - 1);
-            if (!isValidOrigin(origin, generators, microchips) || !isValidDestination(destination, generators, microchips)) {
-                result = false;
-            }
-        } else {
-            result = false;
+    private Status getInitStatus() {
+        Floor[] floors = new Floor[4];
+        for (int i = 0; i < floors.length; i++) {
+            floors[i] = parseLine(input.get(i), i);
         }
-        return result;
-    }
-
-    private boolean isValidOrigin(Floor origin, List<String> generators, List<String> microchips) {
-        boolean result = true;
-        List<String> remainingGenerators = origin.generators.stream().filter(generator -> !generators.contains(generator)).collect(Collectors.toList());
-        List<String> remainingMicrochips = origin.microchips.stream().filter(microchip -> !microchips.contains(microchip)).collect(Collectors.toList());
-        if (!remainingGenerators.isEmpty() && !remainingMicrochips.isEmpty() && remainingMicrochips.stream().anyMatch(microchip -> !remainingGenerators.contains(microchip))) {
-            result = false;
-        }
-        return result;
-    }
-
-    private boolean isValidDestination(Floor destination, List<String> generators, List<String> microchips) {
-        boolean result = true;
-        for (String generator : generators) {
-            if (destination.microchips.stream().anyMatch(microchip -> !microchip.equals(generator) && !destination.generators.contains(microchip))) {
-                result = false;
-            }
-            if (microchips.stream().anyMatch(microchip -> !generators.contains(microchip) && !destination.generators.contains(microchip))) {
-                result = false;
-            }
-        }
-        for (String microchip : microchips) {
-            if (destination.generators.stream().anyMatch(generator -> !generator.equals(microchip) && !destination.generators.contains(microchip) && !generators.contains(microchip))) {
-                result = false;
-            }
-        }
-        return result;
-    }
-
-    private Status goUp(Status status, List<String> generators, List<String> microchips) {
-        Status nextStatus = duplicateStatus(status);
-        nextStatus.elevator += 1;
-        moveElements(status, nextStatus, generators, microchips);
-        return nextStatus;
-    }
-
-    private Status goDown(Status status, List<String> generators, List<String> microchips) {
-        Status nextStatus = duplicateStatus(status);
-        nextStatus.elevator -= 1;
-        moveElements(status, nextStatus, generators, microchips);
-        return nextStatus;
-    }
-
-    private void moveElements(Status oldStatus, Status newStatus, List<String> generatorsToMove, List<String> microchipsToMove) {
-        newStatus.floors.get(oldStatus.elevator).generators.removeAll(generatorsToMove);
-        newStatus.floors.get(oldStatus.elevator).microchips.removeAll(microchipsToMove);
-        newStatus.floors.get(newStatus.elevator).generators.addAll(generatorsToMove);
-        newStatus.floors.get(newStatus.elevator).microchips.addAll(microchipsToMove);
-    }
-
-    private Status duplicateStatus(Status oldStatus) {
-        Status newStatus = new Status(oldStatus.elevator, new ArrayList<>());
-        for (Floor floor : oldStatus.floors) {
-            Floor newFloor = new Floor(floor.number);
-            newFloor.generators.addAll(floor.generators);
-            newFloor.microchips.addAll(floor.microchips);
-            newStatus.floors.add(newFloor);
-        }
-        return newStatus;
+        return new Status(0, floors);
     }
 
     private Floor parseLine(String line, int number) {
@@ -357,55 +319,32 @@ public class Day11 {
         String[] words = line.split(" ");
         for (int i = 0; i < words.length; i++) {
             if (words[i].contains("generator")) {
-                floor.generators.add(words[i - 1]);
+                floor.elements[2 * Arrays.asList(elements).indexOf(words[i - 1])] = 1;
             } else if (words[i].contains("microchip")) {
-                floor.microchips.add(words[i - 1].replaceAll("-compatible", ""));
+                floor.elements[(2 * Arrays.asList(elements).indexOf(words[i - 1].replaceAll("-compatible", ""))) + 1] = 1;
             }
         }
         return floor;
     }
 
-    private Status getInitStatus() {
-        List<Floor> floors = new ArrayList<>();
-        for (int i = 0; i < input.size(); i++) {
-            String line = input.get(i);
-            floors.add(parseLine(line, i));
-        }
-        return new Status(0, floors);
-    }
-
-    private void fillElements(Status status) {
-        for (Floor floor : status.floors) {
-            for (String generator : floor.generators) {
-                if (!generator.isEmpty() && !elements.contains(generator)) {
-                    elements.add(generator);
-                }
-            }
-            for (String microchip : floor.microchips) {
-                if (!microchip.isEmpty() && !elements.contains(microchip)) {
-                    elements.add(microchip);
-                }
-            }
-        }
-    }
-
     private class Status {
 
-        private int elevator;
-        private List<Floor> floors;
+        int elevator;
+        Floor[] floors;
+        boolean checked;
 
-        private Status(int elevator, List<Floor> floors) {
+        private Status(int elevator, Floor[] floors) {
             this.elevator = elevator;
             this.floors = floors;
+            this.checked = false;
         }
 
         private String toHash() {
             StringBuilder result = new StringBuilder();
             result.append(elevator);
             for (Floor floor : floors) {
-                for (String element : elements) {
-                    result.append(floor.generators.contains(element) ? 1 : 0);
-                    result.append(floor.microchips.contains(element) ? 1 : 0);
+                for (int element : floor.elements) {
+                    result.append(element);
                 }
             }
             return result.toString();
@@ -413,18 +352,14 @@ public class Day11 {
     }
 
     private class Floor {
-
-        private int number;
-        private List<String> generators;
-        private List<String> microchips;
+        int number;
+        int[] elements;
 
         private Floor(int number) {
             this.number = number;
-            this.generators = new ArrayList<>();
-            this.microchips = new ArrayList<>();
+            this.elements = new int[10];
         }
-
-
     }
+
 
 }
