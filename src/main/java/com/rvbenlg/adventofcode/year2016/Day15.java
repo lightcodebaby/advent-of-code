@@ -48,10 +48,10 @@ public class Day15 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day15.txt");
+        List<String> input = Utilities.readInput("year2016/day15.txt");
         resetVariables();
         int result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             discs.add(parseDisc(line));
         }
         result = whenToPressTheButton();
@@ -59,10 +59,10 @@ public class Day15 {
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day15.txt");
+        List<String> input = Utilities.readInput("year2016/day15.txt");
         resetVariables();
         int result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             discs.add(parseDisc(line));
         }
         discs.add(parseDisc("Disc #7 has 11 positions; at time=0, it is at position 0."));

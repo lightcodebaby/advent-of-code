@@ -57,59 +57,93 @@ public class Day16 {
     The second disk you have to fill has length 35651584. Again using the initial state in your puzzle input, what is the correct checksum for this disk?
      */
 
-    private final int diskLength = 35651584;
+    private final int diskLength1 = 272;
+    private final int diskLength2 = 35651584;
+    private String a;
+    private String b;
 
     public void solve() throws IOException {
         part1();
+        part2();
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day16.txt");
-        String checksum = "";
-        for(String line : lines) {
-            checksum = fillDisk(line);
-        }
-        System.out.println("Part 1 solution: " + checksum);
+        List<String> input = Utilities.readInput("year2016/day16.txt");
+        a = input.get(0);
+        b = generateB(a);
+        String sequence = fillDisk(diskLength1);
+        sequence = completeSequence(sequence, diskLength1);
+        String checkSum = checkSum(sequence);
+        System.out.println("Part 1 solution: " + checkSum);
     }
 
-    private String fillDisk(String line) {
-        String result = "";
-        String data = dragonCurve(line);
-        while(data.length() < diskLength) {
-            data = dragonCurve(data);
-            System.out.println(data.length());
-        }
-        result = checkSum(data.substring(0, diskLength));
-        return result;
+    private void part2() throws IOException {
+        List<String> input = Utilities.readInput("year2016/day16.txt");
+        a = input.get(0);
+        b = generateB(a);
+        String sequence = fillDisk(diskLength2);
+        sequence = completeSequence(sequence, diskLength2);
+        String checkSum = checkSum(sequence);
+        System.out.println("Part 2 solution: " + checkSum);
     }
 
-    private String dragonCurve(String a) {
-        StringBuilder result = new StringBuilder(a);
-        StringBuilder b = new StringBuilder(a);
-        b.reverse();
-        for(int i = 0; i < a.length(); i++) {
-            if(b.charAt(i) == '1') {
-                b.replace(i, i +1, "0");
-            } else {
-                b.replace(i, i +1, "1");
+    private String fillDisk(int diskLength) {
+        String sequence = "a";
+        int length = a.length();
+        while (length < diskLength) {
+            sequence = updateSequence(sequence);
+            length = (length * 2) + 1;
+        }
+        return sequence;
+    }
+
+    private String updateSequence(String sequence) {
+        StringBuilder sequenceBuilder = new StringBuilder(sequence);
+        sequenceBuilder.append(0);
+        for (int i = sequence.length() - 1; i >= 0; i--) {
+            char c = sequence.charAt(i);
+            if (c == 'a') {
+                sequenceBuilder.append('b');
+            } else if (c == 'b') {
+                sequenceBuilder.append('a');
+            } else if (c == '0') {
+                sequenceBuilder.append('1');
+            } else if (c == '1') {
+                sequenceBuilder.append('0');
             }
         }
-        return result.append(0).append(b).toString();
+        return sequenceBuilder.toString();
+    }
+
+    private String completeSequence(String sequence, int diskLength) {
+        String b = generateB(a);
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < sequence.length(); i++) {
+            char element = sequence.charAt(i);
+            if (element == 'a') {
+                result.append(a);
+            } else if (element == 'b') {
+                result.append(b);
+            } else {
+                result.append(element);
+            }
+        }
+        return result.substring(0, diskLength);
     }
 
     private String checkSum(String data) {
         boolean found = false;
         String result = "";
-        while(!found) {
+        while (!found) {
             StringBuilder stringBuilder = new StringBuilder();
-            for(int i = 0; i < data.length() - 1; i+=2) {
-                if(data.charAt(i) == data.charAt(i+1)) {
+            for (int i = 0; i < data.length() - 1; i += 2) {
+                if (data.charAt(i) == data.charAt(i + 1)) {
                     stringBuilder.append(1);
                 } else {
                     stringBuilder.append(0);
                 }
             }
-            if(stringBuilder.length() % 2 != 0) {
+            if (stringBuilder.length() % 2 != 0) {
                 result = stringBuilder.toString();
                 found = true;
             } else {
@@ -118,5 +152,19 @@ public class Day16 {
         }
         return result;
     }
+
+    private String generateB(String a) {
+        StringBuilder b = new StringBuilder(a);
+        b.reverse();
+        for (int i = 0; i < a.length(); i++) {
+            if (b.charAt(i) == '1') {
+                b.replace(i, i + 1, "0");
+            } else {
+                b.replace(i, i + 1, "1");
+            }
+        }
+        return b.toString();
+    }
+
 
 }

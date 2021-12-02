@@ -48,8 +48,8 @@ public class Day01 {
 
     private void part1() throws IOException {
         resetVariables();
-        List<String> lines = Utilities.readInput("year2016/day01.txt");
-        for (String line : lines) {
+        List<String> input = Utilities.readInput("year2016/day01.txt");
+        for (String line : input) {
             String[] instructions = line.replace(" ", "").split(",");
             for (String instruction : instructions) {
                 followInstruction(instruction);
@@ -100,8 +100,8 @@ public class Day01 {
 
     private void part2() throws IOException {
         resetVariables();
-        List<String> lines = Utilities.readInput("year2016/day01.txt");
-        for (String line : lines) {
+        List<String> input = Utilities.readInput("year2016/day01.txt");
+        for (String line : input) {
             String[] instructions = line.replace(" ", "").split(",");
             boolean alreadyVisited = false;
             for (int i = 0; i < instructions.length && !alreadyVisited; i++) {

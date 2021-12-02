@@ -63,9 +63,9 @@ public class Day08 {
 
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day08.txt");
+        List<String> input = Utilities.readInput("year2016/day08.txt");
         resetScreen();
-        for(String line : lines) {
+        for(String line : input) {
             followInstruction(line);
         }
         int litPixels = howManyPixelsAreLit();

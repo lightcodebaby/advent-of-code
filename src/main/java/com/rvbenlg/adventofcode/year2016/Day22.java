@@ -115,9 +115,9 @@ public class Day22 {
 
     private void part1() throws IOException {
         resetVariables();
-        List<String> lines = Utilities.readInput("year2016/day22.txt");
-        for (int i = 2; i < lines.size(); i++) {
-            nodes.add(parseNode(lines.get(i)));
+        List<String> input = Utilities.readInput("year2016/day22.txt");
+        for (int i = 2; i < input.size(); i++) {
+            nodes.add(parseNode(input.get(i)));
         }
         int result = getViablePairs();
         System.out.println("Part 1 solution: " + result);
@@ -125,9 +125,9 @@ public class Day22 {
 
     private void part2() throws IOException {
         resetVariables();
-        List<String> lines = Utilities.readInput("year2016/day22.txt");
-        for (int i = 2; i < lines.size(); i++) {
-            nodes.add(parseNode(lines.get(i)));
+        List<String> input = Utilities.readInput("year2016/day22.txt");
+        for (int i = 2; i < input.size(); i++) {
+            nodes.add(parseNode(input.get(i)));
         }
         Node goal = nodes.stream().filter(node -> node.y == 0 && nodes.stream().noneMatch(node1 -> node1.x > node.x)).findFirst().get();
         Node emptyNode = nodes.stream().filter(node -> node.used == 0).findFirst().get();

@@ -47,7 +47,6 @@ public class Day17 {
 
     private int destX;
     private int destY;
-    String openChars = "abcdef";
     List<Path> paths;
 
     public void solve() throws IOException, NoSuchAlgorithmException {
@@ -57,42 +56,37 @@ public class Day17 {
 
     private void part1() throws IOException, NoSuchAlgorithmException {
         resetVariables();
-        List<String> lines = Utilities.readInput("year2016/day17.txt");
-        String result = "";
-        for (String line : lines) {
-            paths.add(new Path(0, 0, line));
-            result = move();
-        }
-        System.out.println("Part 1 solution: " + result);
+        List<String> input = Utilities.readInput("year2016/day17.txt");
+        String passcode = input.get(0);
+        paths.add(new Path(0, 0, passcode, getPathHash(passcode)));
+        String result = move();
+        System.out.println("Part 1 solution: " + result.substring(passcode.length()));
     }
 
     private void part2() throws NoSuchAlgorithmException, IOException {
         resetVariables();
-        List<String> lines = Utilities.readInput("year2016/day17.txt");
-        String result = "";
-        for (String line : lines) {
-            paths.add(new Path(0, 0, line));
-            result = findLongestPath();
-        }
-        System.out.println("Part 2 solution: " + result);
+        List<String> input = Utilities.readInput("year2016/day17.txt");
+        String passcode = input.get(0);
+        paths.add(new Path(0, 0, passcode, getPathHash(passcode)));
+        String result = findLongestPath();
+        System.out.println("Part 2 solution: " + (result.length() - passcode.length()));
     }
 
     private String move() throws NoSuchAlgorithmException {
         while (paths.stream().noneMatch(path -> path.posX == destX && path.posY == destY)) {
             List<Path> newPaths = paths.stream().filter(path -> !path.checked).collect(Collectors.toList());
             for (Path path : newPaths) {
-                String pathHash = getPathHash(path.path);
-                if (canGoUp(path, pathHash)) {
-                    paths.add(new Path(path.posX, path.posY - 1, path.path + "U"));
+                if (canGoUp(path)) {
+                    paths.add(new Path(path.posX, path.posY - 1, path.path + "U", getPathHash(path.path + "U")));
                 }
-                if (canGoDown(path, pathHash)) {
-                    paths.add(new Path(path.posX, path.posY + 1, path.path + "D"));
+                if (canGoDown(path)) {
+                    paths.add(new Path(path.posX, path.posY + 1, path.path + "D", getPathHash(path.path + "D")));
                 }
-                if (canGoLeft(path, pathHash)) {
-                    paths.add(new Path(path.posX - 1, path.posY, path.path + "L"));
+                if (canGoLeft(path)) {
+                    paths.add(new Path(path.posX - 1, path.posY, path.path + "L", getPathHash(path.path + "L")));
                 }
-                if (canGoRight(path, pathHash)) {
-                    paths.add(new Path(path.posX + 1, path.posY, path.path + "R"));
+                if (canGoRight(path)) {
+                    paths.add(new Path(path.posX + 1, path.posY, path.path + "R", getPathHash(path.path + "R")));
                 }
                 path.checked = true;
             }
@@ -102,50 +96,58 @@ public class Day17 {
     }
 
     private String findLongestPath() {
-        while (paths.stream().anyMatch(path -> !isLocked(path, getPathHash(path.path)) && (path.posX != destX || path.posY != destY))) {
-            List<Path> newPaths = paths.stream().filter(path -> !path.checked && (path.posX != destX || path.posY != destY)).collect(Collectors.toList());
+        int length = 0;
+        List<Path> newPaths = paths.stream().filter(path -> !path.checked && (path.posX != destX || path.posY != destY) && !isLocked(path)).collect(Collectors.toList());
+        while (!newPaths.isEmpty()) {
             for (Path path : newPaths) {
-                String pathHash = getPathHash(path.path);
-                if(path.posX != destX || path.posY != destY) {
-                    if (canGoUp(path, pathHash)) {
-                        paths.add(new Path(path.posX, path.posY - 1, path.path + "U"));
+                if (path.posX != destX || path.posY != destY) {
+                    if (canGoUp(path)) {
+                        paths.add(new Path(path.posX, path.posY - 1, path.path + "U", getPathHash(path.path + "U")));
                     }
-                    if (canGoDown(path, pathHash)) {
-                        paths.add(new Path(path.posX, path.posY + 1, path.path + "D"));
+                    if (canGoDown(path)) {
+                        paths.add(new Path(path.posX, path.posY + 1, path.path + "D", getPathHash(path.path + "D")));
                     }
-                    if (canGoLeft(path, pathHash)) {
-                        paths.add(new Path(path.posX - 1, path.posY, path.path + "L"));
+                    if (canGoLeft(path)) {
+                        paths.add(new Path(path.posX - 1, path.posY, path.path + "L", getPathHash(path.path + "L")));
                     }
-                    if (canGoRight(path, pathHash)) {
-                        paths.add(new Path(path.posX + 1, path.posY, path.path + "R"));
+                    if (canGoRight(path)) {
+                        paths.add(new Path(path.posX + 1, path.posY, path.path + "R", getPathHash(path.path + "R")));
                     }
                 }
                 path.checked = true;
             }
+            clearPaths();
+            length++;
+            newPaths = paths.stream().filter(path -> !path.checked && (path.posX != destX || path.posY != destY) && !isLocked(path)).collect(Collectors.toList());
         }
         List<Path> destPaths = paths.stream().filter(path -> path.posX == destX && path.posY == destY).collect(Collectors.toList());
         String result = destPaths.stream().filter(path -> destPaths.stream().map(Path::getPath).noneMatch(destPath -> destPath.length() > path.getPath().length())).findFirst().get().path;
         return result;
     }
 
-    private boolean canGoUp(Path path, String pathHash) {
-        return path.posY > 0 && openChars.contains(String.valueOf(pathHash.charAt(0)));
+    private void clearPaths() {
+        paths.removeIf(path -> path.checked && (path.posX != destX || path.posY != destY));
+        paths.removeIf(path -> isLocked(path) && (path.posX != destX || path.posY != destY));
     }
 
-    private boolean canGoDown(Path path, String pathHash) {
-        return path.posY < 3 && openChars.contains(String.valueOf(pathHash.charAt(1)));
+    private boolean canGoUp(Path path) {
+        return path.posY > 0 && path.hash.charAt(0) >= 'b' && path.hash.charAt(0) <= 'f';
     }
 
-    private boolean canGoLeft(Path path, String pathHash) {
-        return path.posX > 0 && openChars.contains(String.valueOf(pathHash.charAt(2)));
+    private boolean canGoDown(Path path) {
+        return path.posY < 3 && path.hash.charAt(1) >= 'b' && path.hash.charAt(1) <= 'f';
     }
 
-    private boolean canGoRight(Path path, String pathHash) {
-        return path.posX < 3 && openChars.contains(String.valueOf(pathHash.charAt(3)));
+    private boolean canGoLeft(Path path) {
+        return path.posX > 0 && path.hash.charAt(2) >= 'b' && path.hash.charAt(2) <= 'f';
     }
 
-    private boolean isLocked(Path path, String pathHash) {
-        return !canGoUp(path, pathHash) && !canGoDown(path, pathHash) && !canGoLeft(path, pathHash) && !canGoRight(path, pathHash);
+    private boolean canGoRight(Path path) {
+        return path.posX < 3 && path.hash.charAt(3) >= 'b' && path.hash.charAt(3) <= 'f';
+    }
+
+    private boolean isLocked(Path path) {
+        return !canGoUp(path) && !canGoDown(path) && !canGoLeft(path) && !canGoRight(path);
     }
 
     private String getPathHash(String path) {
@@ -168,12 +170,14 @@ public class Day17 {
         private int posX;
         private int posY;
         private String path;
+        private String hash;
         private boolean checked;
 
-        private Path(int posX, int posY, String path) {
+        private Path(int posX, int posY, String path, String hash) {
             this.posX = posX;
             this.posY = posY;
             this.path = path;
+            this.hash = hash;
             this.checked = false;
         }
 

@@ -42,9 +42,9 @@ public class Day03 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day03.txt");
+        List<String> input = Utilities.readInput("year2016/day03.txt");
         int count = 0;
-        for (String line : lines) {
+        for (String line : input) {
             if (isTriangle(line)) {
                 count++;
             }
@@ -62,12 +62,12 @@ public class Day03 {
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day03.txt");
+        List<String> input = Utilities.readInput("year2016/day03.txt");
         int result = 0;
-        for (int i = 0; i < lines.size(); i += 3) {
-            List<String> firstDimension = Arrays.stream(lines.get(i).split(" ")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
-            List<String> secondDimension = Arrays.stream(lines.get(i + 1).split(" ")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
-            List<String> thirdDimension = Arrays.stream(lines.get(i + 2).split(" ")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+        for (int i = 0; i < input.size(); i += 3) {
+            List<String> firstDimension = Arrays.stream(input.get(i).split(" ")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+            List<String> secondDimension = Arrays.stream(input.get(i + 1).split(" ")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+            List<String> thirdDimension = Arrays.stream(input.get(i + 2).split(" ")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
             result += howManyTriangles(firstDimension, secondDimension, thirdDimension);
         }
         System.out.println("Part 2 solution: " + result);

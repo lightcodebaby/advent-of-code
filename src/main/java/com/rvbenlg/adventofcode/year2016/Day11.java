@@ -3,8 +3,9 @@ package com.rvbenlg.adventofcode.year2016;
 import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Day11 {
 
@@ -112,196 +113,51 @@ public class Day11 {
      */
 
     private List<String> input = new ArrayList<>();
-    private Set<String> checkedStatuses = new HashSet<>();
-    private List<Status> statuses = new ArrayList<>();
-    private int numberOfElements = 10;
-    private String[] elements = {"polonium", "thulium", "promethium", "ruthenium", "cobalt"};
-    private int minFloor = 0;
+    private String[] elementsPart1 = {"polonium", "thulium", "promethium", "ruthenium", "cobalt", "elerium", "dilithium"};
 
     public void solve() throws IOException {
         part1();
+        part2();
     }
 
     private void part1() throws IOException {
         input = Utilities.readInput("year2016/day11.txt");
-        useElevator();
+        int steps = useElevator();
+        System.out.println("Part 1 solution: " + steps);
     }
 
-    private void useElevator() {
+    private void part2() throws IOException {
+        input = Utilities.readInput("year2016/day11.txt");
+        updateInput();
+        int steps = useElevator();
+        System.out.println("Part 2 solution: " + steps);
+    }
+
+    private void updateInput() {
+        input.set(0, input.get(0) + " an elerium generator, an elerium-compatible microchip, a dilithium generator and a dilithium-compatible microchip");
+    }
+
+    private int useElevator() {
         Status initStatus = getInitStatus();
-        statuses.add(initStatus);
-        boolean ended = false;
         int steps = 0;
-        while (!ended) {
-            List<Status> unchecked = statuses.stream().filter(status -> !status.checked).collect(Collectors.toList());
-            for (Status status : unchecked) {
-                if (!status.checked) {
-                    ended = checkIfEnded(status);
-                    checkMinFloor();
-                    move(status);
-                    checkedStatuses.add(status.toHash());
-                    status.checked = true;
-                }
-            }
-            steps++;
-        }
-    }
-
-    private void checkMinFloor() {
-        if (statuses.stream().anyMatch(status -> status.toHash().substring(1).startsWith("0000000000"))) {
-            minFloor = 1;
-        }
-        if (statuses.stream().anyMatch(status -> status.toHash().substring(1).startsWith("00000000000000000000"))) {
-            minFloor = 2;
-        }
-    }
-
-    private boolean checkIfEnded(Status status) {
-        return status.toHash().equals("40000000000000000000000000000001111111111");
-    }
-
-    private void move(Status status) {
-        Floor floor = status.floors[status.elevator];
-        int[] indexes = new int[2];
-        for (int i = 0; i < floor.elements.length; i++) {
-            boolean movedUp = false;
-            boolean movedDown = false;
-            if (floor.elements[i] != 0) {
-                indexes[0] = i;
-                indexes[1] = -1;
-                movedDown = moveDown(status, indexes);
-                for (int j = i + 1; j < floor.elements.length; j++) {
-                    if (floor.elements[j] != 0) {
-                        indexes[1] = j;
-                        movedUp = moveUp(status, indexes);
-                        if (!movedDown) {
-                            moveDown(status, indexes);
-                        }
-                    }
-                }
-                if (!movedUp) {
-                    moveUp(status, indexes);
-                }
+        int elementsToMove = 0;
+        int highestFloor = Arrays.stream(initStatus.floors).mapToInt(floor -> floor.number).max().orElse(-1);
+        for (Floor floor : initStatus.floors) {
+            if (floor.number != highestFloor) {
+                elementsToMove += howManyElements(floor);
+                steps += ((elementsToMove * 2) - 3);
             }
         }
+        return steps;
     }
 
-    private void removeElements(Status status, int[] indexes) {
-        for (int index : indexes) {
-            if (index != -1) {
-                status.floors[status.elevator].elements[index] = 0;
+
+    private int howManyElements(Floor floor) {
+        int result = 0;
+        for (int element : floor.elements) {
+            if (element == 1) {
+                result++;
             }
-        }
-    }
-
-    private boolean moveUp(Status status, int[] indexes) {
-        boolean result = false;
-        if (status.elevator < 3) {
-            Status auxStatus = duplicate(status);
-            moveElementsUp(auxStatus, indexes);
-            auxStatus.elevator++;
-            result = !checkedStatuses.contains(auxStatus.toHash()) && isValid(auxStatus);
-            if (result) {
-                statuses.add(auxStatus);
-            }
-        }
-        return result;
-    }
-
-    private boolean moveDown(Status status, int[] indexes) {
-        boolean result = false;
-        if (status.elevator > 0) {
-            Status auxStatus = duplicate(status);
-            moveElementsDown(auxStatus, indexes);
-            auxStatus.elevator--;
-            result = !checkedStatuses.contains(auxStatus.toHash()) && isValid(auxStatus);
-            if (result) {
-                statuses.add(auxStatus);
-            }
-        }
-        return result;
-    }
-
-    private void moveElementsUp(Status status, int[] indexes) {
-        removeElements(status, indexes);
-        for (int index : indexes) {
-            if (index != -1) {
-                status.floors[status.elevator + 1].elements[index] = 1;
-            }
-        }
-    }
-
-    private void moveElementsDown(Status status, int[] indexes) {
-        removeElements(status, indexes);
-        for (int index : indexes) {
-            if (index != -1) {
-                status.floors[status.elevator - 1].elements[index] = 1;
-            }
-        }
-    }
-
-    private boolean areEquivalent(Status status1, Status status2) {
-        List<Status> equivalent = equivalents(status1);
-        return equivalent.stream().map(Status::toHash).collect(Collectors.toList()).contains(status2.toHash());
-    }
-
-    private Status duplicate(Status status) {
-        int elevator = status.elevator;
-        Floor[] floors = new Floor[status.floors.length];
-        for (int i = 0; i < floors.length; i++) {
-            Floor floor = status.floors[i];
-            Floor auxFloor = new Floor(floor.number);
-            int[] auxElements = new int[floor.elements.length];
-            for (int j = 0; j < floor.elements.length; j++) {
-                auxElements[j] = floor.elements[j];
-            }
-            auxFloor.elements = auxElements;
-            floors[i] = auxFloor;
-        }
-        return new Status(elevator, floors);
-    }
-
-    private List<Status> equivalents(Status status) {
-        List<Status> statuses = new ArrayList<>();
-        for (int i = 0; i < numberOfElements; i += 2) {
-            for (int j = i + 2; j < numberOfElements; j += 2) {
-                Status auxStatus = duplicate(status);
-                Floor[] floors = status.floors;
-                for (Floor floor : floors) {
-                    int auxValue = floor.elements[i];
-                    int auxValue2 = floor.elements[i + 1];
-                    floor.elements[i] = floor.elements[j];
-                    floor.elements[i + 1] = floor.elements[j + 1];
-                    floor.elements[j] = auxValue;
-                    floor.elements[j + 1] = auxValue2;
-                }
-                statuses.add(auxStatus);
-            }
-        }
-        return statuses;
-    }
-
-    private boolean isValid(Status status) {
-        boolean result = true;
-        if(statuses.stream().noneMatch(status1 -> areEquivalent(status1, status))) {
-            for (int j = 0; j < status.floors.length; j++) {
-                Floor floor = status.floors[j];
-                int[] elements = floor.elements;
-                boolean generators = false;
-                boolean notProtectedMicrochips = false;
-                for (int i = 0; i < elements.length; i++) {
-                    if (i % 2 == 0 && elements[i] == 1) {
-                        generators = true;
-                    } else if (i % 2 != 0 && elements[i] == 1 && elements[i - 1] == 0) {
-                        notProtectedMicrochips = true;
-                    }
-                }
-                if (generators && notProtectedMicrochips) {
-                    result = false;
-                }
-            }
-        } else {
-            result = false;
         }
         return result;
     }
@@ -319,9 +175,9 @@ public class Day11 {
         String[] words = line.split(" ");
         for (int i = 0; i < words.length; i++) {
             if (words[i].contains("generator")) {
-                floor.elements[2 * Arrays.asList(elements).indexOf(words[i - 1])] = 1;
+                floor.elements[2 * Arrays.asList(elementsPart1).indexOf(words[i - 1])] = 1;
             } else if (words[i].contains("microchip")) {
-                floor.elements[(2 * Arrays.asList(elements).indexOf(words[i - 1].replaceAll("-compatible", ""))) + 1] = 1;
+                floor.elements[(2 * Arrays.asList(elementsPart1).indexOf(words[i - 1].replaceAll("-compatible", ""))) + 1] = 1;
             }
         }
         return floor;
@@ -339,16 +195,6 @@ public class Day11 {
             this.checked = false;
         }
 
-        private String toHash() {
-            StringBuilder result = new StringBuilder();
-            result.append(elevator);
-            for (Floor floor : floors) {
-                for (int element : floor.elements) {
-                    result.append(element);
-                }
-            }
-            return result.toString();
-        }
     }
 
     private class Floor {
@@ -357,7 +203,7 @@ public class Day11 {
 
         private Floor(int number) {
             this.number = number;
-            this.elements = new int[10];
+            this.elements = new int[elementsPart1.length * 2];
         }
     }
 

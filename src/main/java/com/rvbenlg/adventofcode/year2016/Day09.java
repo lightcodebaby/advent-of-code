@@ -50,18 +50,18 @@ public class Day09 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day09.txt");
+        List<String> input = Utilities.readInput("year2016/day09.txt");
         int result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             result += decompress(line).length();
         }
         System.out.println("Part 1 solution: " + result);
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day09.txt");
+        List<String> input = Utilities.readInput("year2016/day09.txt");
         long result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             String data = line;
             result = totalLength(data);
         }

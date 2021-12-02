@@ -64,10 +64,10 @@ public class Day02 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day02.txt");
+        List<String> input = Utilities.readInput("year2016/day02.txt");
         resetVariables(1);
         StringBuilder stringBuilder = new StringBuilder();
-        for (String line : lines) {
+        for (String line : input) {
             stringBuilder.append(followInstructions(line));
         }
         System.out.println("Part 1 solution: " + stringBuilder);
@@ -116,10 +116,10 @@ public class Day02 {
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day02.txt");
+        List<String> input = Utilities.readInput("year2016/day02.txt");
         resetVariables(2);
         StringBuilder stringBuilder = new StringBuilder();
-        for (String line : lines) {
+        for (String line : input) {
             stringBuilder.append(followInstructions2(line));
         }
         System.out.println("Part 2 solution: " + stringBuilder);

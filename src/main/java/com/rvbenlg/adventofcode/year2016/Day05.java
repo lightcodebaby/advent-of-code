@@ -51,9 +51,9 @@ public class Day05 {
     }
 
     private void part1() throws IOException, NoSuchAlgorithmException {
-        List<String> lines = Utilities.readInput("year2016/day05.txt");
+        List<String> input = Utilities.readInput("year2016/day05.txt");
         String result = "";
-        for (String line : lines) {
+        for (String line : input) {
             result = getPassword(line);
         }
         System.out.println("Part 1 solution: " + result);
@@ -77,9 +77,9 @@ public class Day05 {
     }
 
     private void part2() throws NoSuchAlgorithmException, IOException {
-        List<String> lines = Utilities.readInput("year2016/day05.txt");
+        List<String> input = Utilities.readInput("year2016/day05.txt");
         String result = "";
-        for (String line : lines) {
+        for (String line : input) {
             result = getSecondPassword(line);
         }
         System.out.println("Part 2 solution: " + result);

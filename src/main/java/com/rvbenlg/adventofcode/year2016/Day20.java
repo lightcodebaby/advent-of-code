@@ -17,8 +17,8 @@ public class Day20 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day20.txt");
-        for (String line : lines) {
+        List<String> input = Utilities.readInput("year2016/day20.txt");
+        for (String line : input) {
             createBlackListRange(line);
         }
         long result = findLowestIP();

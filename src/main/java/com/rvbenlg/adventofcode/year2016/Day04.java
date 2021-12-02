@@ -43,9 +43,9 @@ public class Day04 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day04.txt");
+        List<String> input = Utilities.readInput("year2016/day04.txt");
         int result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             int sectorId = Integer.parseInt(getSectorId(line));
             String checksum = getChecksum(line);
             String onlyLetters = getLetters(line);
@@ -117,9 +117,9 @@ public class Day04 {
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day04.txt");
+        List<String> input = Utilities.readInput("year2016/day04.txt");
         int result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             String encryptedRoom = getEncryptedRoomName(line);
             String decryptedRoom = "";
             int sectorId = Integer.parseInt(getSectorId(line));

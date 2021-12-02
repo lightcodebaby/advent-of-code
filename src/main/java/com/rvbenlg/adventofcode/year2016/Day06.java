@@ -53,11 +53,11 @@ public class Day06 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day06.txt");
+        List<String> input = Utilities.readInput("year2016/day06.txt");
         String result = "";
-        int lineLength = lines.get(0).length();
+        int lineLength = input.get(0).length();
         for(int i = 0; i < lineLength; i++) {
-            List<Character> characters = getColumnChars(lines, i);
+            List<Character> characters = getColumnChars(input, i);
             result = result + mostCommonCharacterInColumn(characters);
         }
         System.out.println("Part 1 solution: " + result);
@@ -87,11 +87,11 @@ public class Day06 {
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day06.txt");
+        List<String> input = Utilities.readInput("year2016/day06.txt");
         String result = "";
-        int lineLength = lines.get(0).length();
+        int lineLength = input.get(0).length();
         for(int i = 0; i < lineLength; i++) {
-            List<Character> characters = getColumnChars(lines, i);
+            List<Character> characters = getColumnChars(input, i);
             result = result + leastCommonCharacterInColumn(characters);
         }
         System.out.println("Part 2 solution: " + result);

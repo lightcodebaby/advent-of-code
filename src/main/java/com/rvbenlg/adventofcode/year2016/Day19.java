@@ -19,8 +19,8 @@ public class Day19 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day19.txt");
-        totalElves = Integer.parseInt(lines.get(0));
+        List<String> input = Utilities.readInput("year2016/day19.txt");
+        totalElves = Integer.parseInt(input.get(0));
         resetVariables();
         fillPresents(totalElves);
         int result = stealPresents() + 1;
@@ -28,8 +28,8 @@ public class Day19 {
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day19.txt");
-        totalElves = Integer.parseInt(lines.get(0));
+        List<String> input = Utilities.readInput("year2016/day19.txt");
+        totalElves = Integer.parseInt(input.get(0));
         resetVariables();
         fillPresents(totalElves);
         int result = happyIdea2();

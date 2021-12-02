@@ -69,9 +69,9 @@ public class Day18 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day18.txt");
+        List<String> input = Utilities.readInput("year2016/day18.txt");
         resetVariables();
-        for(String line : lines) {
+        for(String line : input) {
             rows.add(stringToRow(line));
         }
         calculateRows(40);
@@ -80,9 +80,9 @@ public class Day18 {
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day18.txt");
+        List<String> input = Utilities.readInput("year2016/day18.txt");
         resetVariables();
-        for(String line : lines) {
+        for(String line : input) {
             rows.add(stringToRow(line));
         }
         calculateRows(400000);

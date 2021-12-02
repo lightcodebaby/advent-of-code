@@ -51,19 +51,19 @@ public class Day21 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day21.txt");
+        List<String> input = Utilities.readInput("year2016/day21.txt");
         resetVariables(1);
-        for (String instruction : lines) {
+        for (String instruction : input) {
             scramble(instruction);
         }
         System.out.println("Part 1 solution: " + scrambleBuilder.toString());
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day21.txt");
+        List<String> input = Utilities.readInput("year2016/day21.txt");
         resetVariables(2);
-        for (int i = lines.size() - 1; i >= 0; i--) {
-            String instruction = lines.get(i);
+        for (int i = input.size() - 1; i >= 0; i--) {
+            String instruction = input.get(i);
             unscramble(instruction);
         }
         System.out.println("Part 2 solution: " + scrambleBuilder.toString());

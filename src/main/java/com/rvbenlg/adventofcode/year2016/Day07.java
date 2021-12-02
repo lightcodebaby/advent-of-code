@@ -42,9 +42,9 @@ public class Day07 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day07.txt");
+        List<String> input = Utilities.readInput("year2016/day07.txt");
         int result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             if (supportTLS(line)) {
                 result++;
             }
@@ -99,9 +99,9 @@ public class Day07 {
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day07.txt");
+        List<String> input = Utilities.readInput("year2016/day07.txt");
         int result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             if (supportSSL(line)) {
                 result++;
             }

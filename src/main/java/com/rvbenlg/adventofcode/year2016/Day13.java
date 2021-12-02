@@ -62,20 +62,20 @@ public class Day13 {
     }
 
     private void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day13.txt");
+        List<String> input = Utilities.readInput("year2016/day13.txt");
         initializePositions();
         int result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             result = move(line);
         }
         System.out.println("Part 1 solution: " + result);
     }
 
     private void part2() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day13.txt");
+        List<String> input = Utilities.readInput("year2016/day13.txt");
         initializePositions();
         int result = 0;
-        for (String line : lines) {
+        for (String line : input) {
             result = move50Times(line);
         }System.out.println("Part 2 solution: " + result);
 

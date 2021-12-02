@@ -50,9 +50,9 @@ public class Day10 {
     }
 
     public void part1() throws IOException {
-        List<String> lines = Utilities.readInput("year2016/day10.txt");
-        List<String> valueInstructions = lines.stream().filter(this::isValueInstruction).collect(Collectors.toList());
-        List<String> botInstructions = lines.stream().filter(this::isBotInstruction).collect(Collectors.toList());
+        List<String> input = Utilities.readInput("year2016/day10.txt");
+        List<String> valueInstructions = input.stream().filter(this::isValueInstruction).collect(Collectors.toList());
+        List<String> botInstructions = input.stream().filter(this::isBotInstruction).collect(Collectors.toList());
         int result = 0;
         for (String instruction : valueInstructions) {
             followInstruction(instruction);
