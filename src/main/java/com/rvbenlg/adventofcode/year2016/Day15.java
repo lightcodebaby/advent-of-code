@@ -73,9 +73,9 @@ public class Day15 {
     private int whenToPressTheButton() {
         boolean found = false;
         int time = 1;
-        while(!found) {
+        while (!found) {
             discs.forEach(disc -> disc.currentPosition = (disc.currentPosition + 1) % disc.positions);
-            if(discs.stream().filter(disc -> disc.currentPosition == 0).count() == discs.size()) {
+            if (discs.stream().filter(disc -> disc.currentPosition == 0).count() == discs.size()) {
                 found = true;
             } else {
                 time++;

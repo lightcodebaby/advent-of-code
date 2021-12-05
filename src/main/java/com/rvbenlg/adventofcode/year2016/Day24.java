@@ -30,30 +30,30 @@ public class Day24 {
         int result = 0;
         List<Path> paths = new ArrayList<>();
         paths.add(getFirstPath());
-        while(paths.stream().noneMatch(path -> path.visitedLocations.size() == locations.size())) {
+        while (paths.stream().noneMatch(path -> path.visitedLocations.size() == locations.size())) {
             List<Path> newPaths = paths.stream().filter(path -> !path.checked).collect(Collectors.toList());
             List<Path> haveVisitedNewLocation = new ArrayList<>();
-            for(Path path : newPaths) {
+            for (Path path : newPaths) {
                 Coordinate currentCoordinate = path.coordinates.get(path.coordinates.size() - 1);
-                if(checkIfNewLocation(path)) {
+                if (checkIfNewLocation(path)) {
                     haveVisitedNewLocation.add(path);
                 } else {
-                    if(canGoUp(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
+                    if (canGoUp(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
                         paths.add(new Path(path, new Coordinate(currentCoordinate.x, currentCoordinate.y - 1)));
                     }
-                    if(canGoDown(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
+                    if (canGoDown(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
                         paths.add(new Path(path, new Coordinate(currentCoordinate.x, currentCoordinate.y + 1)));
                     }
-                    if(canGoLeft(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
+                    if (canGoLeft(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
                         paths.add(new Path(path, new Coordinate(currentCoordinate.x - 1, currentCoordinate.y)));
                     }
-                    if(canGoRight(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
+                    if (canGoRight(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
                         paths.add(new Path(path, new Coordinate(currentCoordinate.x + 1, currentCoordinate.y)));
                     }
                     path.checked = true;
                 }
             }
-            if(haveVisitedNewLocation.size() > 0) {
+            if (haveVisitedNewLocation.size() > 0) {
                 updatePaths(paths, haveVisitedNewLocation);
             } else {
                 paths.removeIf(path -> path.checked);
@@ -65,10 +65,10 @@ public class Day24 {
 
     private void updatePaths(List<Path> paths, List<Path> haveVisitedNewLocation) {
         paths.clear();
-        for(Path path : haveVisitedNewLocation) {
+        for (Path path : haveVisitedNewLocation) {
             List<Coordinate> allCurrentCoordinates = paths.stream().map(path1 -> path1.coordinates.get(path1.coordinates.size() - 1)).collect(Collectors.toList());
             Coordinate pathCurrentCoordinate = path.coordinates.get(path.coordinates.size() - 1);
-            if(allCurrentCoordinates.stream().noneMatch(coordinate -> coordinate.x == pathCurrentCoordinate.x && coordinate.y == pathCurrentCoordinate.y)) {
+            if (allCurrentCoordinates.stream().noneMatch(coordinate -> coordinate.x == pathCurrentCoordinate.x && coordinate.y == pathCurrentCoordinate.y)) {
                 paths.add(path);
             }
         }
@@ -78,7 +78,7 @@ public class Day24 {
         boolean result = false;
         Coordinate currentCoordinate = path.coordinates.get(path.coordinates.size() - 1);
         Optional<Location> optionalLocation = locations.stream().filter(location -> location.coordinate.x == currentCoordinate.x && location.coordinate.y == currentCoordinate.y && path.visitedLocations.stream().noneMatch(location1 -> location.value == location1.value)).findFirst();
-        if(optionalLocation.isPresent()) {
+        if (optionalLocation.isPresent()) {
             path.visitedLocations.add(optionalLocation.get());
             path.coordinates = new ArrayList<>();
             path.coordinates.add(currentCoordinate);
@@ -153,9 +153,9 @@ public class Day24 {
         List<Integer> visitedLocations = path.visitedLocations.stream().map(location -> location.value).collect(Collectors.toList());
         List<Path> result = new ArrayList<>();
         result.add(path);
-        for(Path auxPath : paths) {
+        for (Path auxPath : paths) {
             List<Integer> auxVisitedLocations = auxPath.visitedLocations.stream().map(location -> location.value).collect(Collectors.toList());
-            if(visitedLocations.size() > 1 && visitedLocations.containsAll(auxVisitedLocations)) {
+            if (visitedLocations.size() > 1 && visitedLocations.containsAll(auxVisitedLocations)) {
                 result.add(auxPath);
             }
         }

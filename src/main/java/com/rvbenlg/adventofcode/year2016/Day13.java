@@ -77,7 +77,8 @@ public class Day13 {
         int result = 0;
         for (String line : input) {
             result = move50Times(line);
-        }System.out.println("Part 2 solution: " + result);
+        }
+        System.out.println("Part 2 solution: " + result);
 
     }
 

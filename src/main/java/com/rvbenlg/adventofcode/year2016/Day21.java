@@ -143,7 +143,7 @@ public class Day21 {
             steps++;
             int index = scrambleBuilder.indexOf(letter);
             hipotheticalSteps = index + (index >= 4 ? 2 : 1);
-        } while(steps != hipotheticalSteps);
+        } while (steps != hipotheticalSteps);
     }
 
     private void movePositions(String instruction) {
@@ -151,7 +151,7 @@ public class Day21 {
         int positionA = Integer.parseInt(elements[2]);
         int positionB = Integer.parseInt(elements[5]);
         char toMove = scrambleBuilder.charAt(positionA);
-        scrambleBuilder.replace(positionA, positionA+1, "");
+        scrambleBuilder.replace(positionA, positionA + 1, "");
         scrambleBuilder.insert(positionB, toMove);
     }
 
@@ -160,7 +160,7 @@ public class Day21 {
         int positionA = Integer.parseInt(elements[2]);
         int positionB = Integer.parseInt(elements[5]);
         char toMove = scrambleBuilder.charAt(positionB);
-        scrambleBuilder.replace(positionB, positionB+1, "");
+        scrambleBuilder.replace(positionB, positionB + 1, "");
         scrambleBuilder.insert(positionA, toMove);
     }
 
@@ -170,7 +170,7 @@ public class Day21 {
         for (int i = 0; i < steps; i++) {
             StringBuilder aux = new StringBuilder();
             for (int j = 0; j < scrambleBuilder.length(); j++) {
-                if(j == scrambleBuilder.length() - 1) {
+                if (j == scrambleBuilder.length() - 1) {
                     aux.append(scrambleBuilder.charAt(0));
                 } else {
                     aux.append(scrambleBuilder.charAt(j + 1));
@@ -193,7 +193,7 @@ public class Day21 {
         for (int i = 0; i < steps; i++) {
             StringBuilder aux = new StringBuilder();
             for (int j = 0; j < scrambleBuilder.length(); j++) {
-                if(j == 0) {
+                if (j == 0) {
                     aux.append(scrambleBuilder.charAt(scrambleBuilder.length() - 1));
                 } else {
                     aux.append(scrambleBuilder.charAt(j - 1));

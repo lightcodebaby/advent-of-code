@@ -79,8 +79,8 @@ public class Day03 {
         triangles.add(String.format("%s %s %s", firstDimension.get(0), secondDimension.get(0), thirdDimension.get(0)));
         triangles.add(String.format("%s %s %s", firstDimension.get(1), secondDimension.get(1), thirdDimension.get(1)));
         triangles.add(String.format("%s %s %s", firstDimension.get(2), secondDimension.get(2), thirdDimension.get(2)));
-        for(String triangle : triangles) {
-            if(isTriangle(triangle)) {
+        for (String triangle : triangles) {
+            if (isTriangle(triangle)) {
                 result++;
             }
         }

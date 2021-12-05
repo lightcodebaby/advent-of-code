@@ -69,7 +69,7 @@ public class Day02 {
 
     private int calculateRibbon(List<Integer> presentDimensions) {
         int ribbon = 0;
-        ribbon += 2* (presentDimensions.get(0) + presentDimensions.get(1));
+        ribbon += 2 * (presentDimensions.get(0) + presentDimensions.get(1));
         ribbon += presentDimensions.get(0) * presentDimensions.get(1) * presentDimensions.get(2);
         return ribbon;
     }

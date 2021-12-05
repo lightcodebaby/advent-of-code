@@ -57,10 +57,10 @@ public class Day20 {
 
     private int howManyIpsAreAllowed() {
         int result = 0;
-        for(long l = 0L; l < 4294967295L; l++) {
+        for (long l = 0L; l < 4294967295L; l++) {
             long ipToCheck = l;
             Optional<BlackListRange> optionalBlackListRange = blackListRanges.stream().filter(blr -> blr.min <= ipToCheck && blr.max >= ipToCheck).findAny();
-            if(optionalBlackListRange.isPresent()) {
+            if (optionalBlackListRange.isPresent()) {
                 l = optionalBlackListRange.get().max;
             } else {
                 result++;
@@ -72,10 +72,10 @@ public class Day20 {
     private long findLowestIP() {
         long result = 0L;
         boolean found = false;
-        while(!found) {
+        while (!found) {
             long finalResult = result;
             Optional<BlackListRange> optionalBlackListRange = blackListRanges.stream().filter(blr -> blr.min <= finalResult && blr.max >= finalResult).findAny();
-            if(optionalBlackListRange.isPresent()) {
+            if (optionalBlackListRange.isPresent()) {
                 result = optionalBlackListRange.get().max + 1;
             } else {
                 found = true;

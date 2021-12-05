@@ -18,7 +18,7 @@ public class Utilities {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(inputPath));
         List<String> result = new ArrayList<>();
         String currentLine;
-        while((currentLine = bufferedReader.readLine()) != null){
+        while ((currentLine = bufferedReader.readLine()) != null) {
             result.add(currentLine);
         }
         bufferedReader.close();
@@ -44,7 +44,7 @@ public class Utilities {
 
     public static int factorial(int number) {
         int result = 1;
-        for(int i = 1; i <= number; i++) {
+        for (int i = 1; i <= number; i++) {
             result *= i;
         }
         return result;

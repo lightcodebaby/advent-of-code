@@ -58,7 +58,7 @@ public class Day01 {
         long floor = 0;
         long position = 0;
         for (String line : lines) {
-            for (int i = 0; i < line.length() && floor != -1 ; i++) {
+            for (int i = 0; i < line.length() && floor != -1; i++) {
                 char instruction = line.charAt(i);
                 if (instruction == '(') {
                     floor++;

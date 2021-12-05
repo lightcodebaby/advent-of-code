@@ -114,12 +114,12 @@ public class Day05 {
         for (Line line : lines) {
             int posX = line.initX;
             int posY = line.initY;
-            while(posX != line.endX || posY != line.endY) {
+            while (posX != line.endX || posY != line.endY) {
                 result[posY][posX]++;
-                if(posX != line.endX) {
+                if (posX != line.endX) {
                     posX += posX < line.endX ? 1 : -1;
                 }
-                if(posY != line.endY) {
+                if (posY != line.endY) {
                     posY += posY < line.endY ? 1 : -1;
                 }
             }

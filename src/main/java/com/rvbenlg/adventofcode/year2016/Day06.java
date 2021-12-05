@@ -56,7 +56,7 @@ public class Day06 {
         List<String> input = Utilities.readInput("year2016/day06.txt");
         String result = "";
         int lineLength = input.get(0).length();
-        for(int i = 0; i < lineLength; i++) {
+        for (int i = 0; i < lineLength; i++) {
             List<Character> characters = getColumnChars(input, i);
             result = result + mostCommonCharacterInColumn(characters);
         }
@@ -71,8 +71,8 @@ public class Day06 {
 
     private Hashtable<Character, Integer> howManyTimesCharacterInColumn(List<Character> characters) {
         Hashtable<Character, Integer> howManyTimes = new Hashtable<>();
-        for(char character : characters) {
-            if(howManyTimes.containsKey(character)) {
+        for (char character : characters) {
+            if (howManyTimes.containsKey(character)) {
                 int times = howManyTimes.get(character) + 1;
                 howManyTimes.put(character, times);
             } else {
@@ -90,7 +90,7 @@ public class Day06 {
         List<String> input = Utilities.readInput("year2016/day06.txt");
         String result = "";
         int lineLength = input.get(0).length();
-        for(int i = 0; i < lineLength; i++) {
+        for (int i = 0; i < lineLength; i++) {
             List<Character> characters = getColumnChars(input, i);
             result = result + leastCommonCharacterInColumn(characters);
         }

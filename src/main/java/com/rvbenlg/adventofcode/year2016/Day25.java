@@ -44,7 +44,7 @@ public class Day25 {
             }
         } else if (isTransmitInstruction(instruction)) {
             int whatToPrint = values.get(whatToTransmit(instruction));
-            if(whatToPrint == lastPrinted) {
+            if (whatToPrint == lastPrinted) {
                 refreshFirstValue();
                 System.out.println("Refreshing first value. New value: " + firstValue);
                 part1();
@@ -58,7 +58,7 @@ public class Day25 {
 
     private void followCopyInstruction(String instruction) {
         char whereToCopy = getWhereToCopy(instruction);
-        if(!Utilities.isNumber(String.valueOf(whereToCopy))) {
+        if (!Utilities.isNumber(String.valueOf(whereToCopy))) {
             int whatToCopy = getValueToCopy(instruction);
             values.put(whereToCopy, whatToCopy);
         }
@@ -135,7 +135,7 @@ public class Day25 {
 
     private int howManyToJump(String instruction) {
         int result = 0;
-        if(Utilities.isNumber(instruction.split(" ")[2])) {
+        if (Utilities.isNumber(instruction.split(" ")[2])) {
             result = Integer.parseInt(instruction.split(" ")[2]);
         } else {
             result = values.get(instruction.split(" ")[2].charAt(0));

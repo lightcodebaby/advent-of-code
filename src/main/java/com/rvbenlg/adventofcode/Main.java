@@ -8,10 +8,9 @@ public class Main {
     public static final int DAY = 5;
 
     public static void main(String[] args) {
-        if(args.length != 2){
+        if (args.length != 2) {
             solveProblem(YEAR, DAY);
-        }
-        else{
+        } else {
             solveProblem(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
         }
 

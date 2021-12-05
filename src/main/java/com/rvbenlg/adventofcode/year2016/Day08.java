@@ -65,7 +65,7 @@ public class Day08 {
     private void part1() throws IOException {
         List<String> input = Utilities.readInput("year2016/day08.txt");
         resetScreen();
-        for(String line : input) {
+        for (String line : input) {
             followInstruction(line);
         }
         int litPixels = howManyPixelsAreLit();
@@ -79,9 +79,9 @@ public class Day08 {
 
     private int howManyPixelsAreLit() {
         int count = 0;
-        for(int row = 0; row < rows; row++){
-            for(int column = 0; column < columns; column++) {
-                if(screen[row][column]) {
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (screen[row][column]) {
                     count++;
                 }
             }
@@ -90,15 +90,16 @@ public class Day08 {
     }
 
     private void followInstruction(String line) {
-        if(isCreateRect(line)) {
+        if (isCreateRect(line)) {
             int wide = getRectangleWide(line);
             int tall = getRectangleTall(line);
-            createRectangle(wide, tall);;
-        } else if(isRotateColumn(line)) {
+            createRectangle(wide, tall);
+            ;
+        } else if (isRotateColumn(line)) {
             int column = getColumnToRotate(line);
             int by = howManyToRotateColumn(line);
             rotateColumn(column, by);
-        } else if(isRotateRow(line)) {
+        } else if (isRotateRow(line)) {
             int row = getRowToRotate(line);
             int by = howManyToRotateRow(line);
             rotateRow(row, by);
@@ -106,8 +107,8 @@ public class Day08 {
     }
 
     private void createRectangle(int wide, int tall) {
-        for(int row = 0; row < tall; row++) {
-            for(int column = 0; column < wide; column++) {
+        for (int row = 0; row < tall; row++) {
+            for (int column = 0; column < wide; column++) {
                 screen[row][column] = true;
             }
         }
@@ -115,14 +116,14 @@ public class Day08 {
 
     private void rotateColumn(int column, int by) {
         boolean[][] auxScreen = getAuxScreen2();
-        for(int row = 0; row < rows; row++) {
+        for (int row = 0; row < rows; row++) {
             screen[row][column] = auxScreen[Math.abs(rows + row - by) % rows][column];
         }
     }
 
     private void rotateRow(int row, int by) {
         boolean[][] auxScreen = getAuxScreen2();
-        for(int column = 0; column < columns; column++) {
+        for (int column = 0; column < columns; column++) {
             screen[row][column] = auxScreen[row][Math.abs(columns + column - by) % columns];
         }
     }
@@ -131,11 +132,11 @@ public class Day08 {
         return instruction.startsWith("rect ");
     }
 
-    private boolean isRotateRow(String instruction){
+    private boolean isRotateRow(String instruction) {
         return instruction.startsWith("rotate row y=");
     }
 
-    private boolean isRotateColumn(String instruction){
+    private boolean isRotateColumn(String instruction) {
         return instruction.startsWith("rotate column x=");
     }
 
@@ -179,8 +180,8 @@ public class Day08 {
 
     private boolean[][] getAuxScreen2() {
         boolean[][] auxScreen = new boolean[rows][columns];
-        for(int row = 0; row < rows; row++) {
-            for(int column = 0; column < columns; column++) {
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
                 auxScreen[row][column] = screen[row][column];
             }
         }

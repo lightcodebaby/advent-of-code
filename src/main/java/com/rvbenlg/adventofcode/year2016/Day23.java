@@ -59,7 +59,6 @@ public class Day23 {
      */
 
 
-
     private HashMap<Character, Integer> values = new HashMap<>();
     private List<String> instructions = new ArrayList<>();
 
@@ -112,7 +111,7 @@ public class Day23 {
 
     private void followCopyInstruction(String instruction) {
         char whereToCopy = getWhereToCopy(instruction);
-        if(!Utilities.isNumber(String.valueOf(whereToCopy))) {
+        if (!Utilities.isNumber(String.valueOf(whereToCopy))) {
             int whatToCopy = getValueToCopy(instruction);
             values.put(whereToCopy, whatToCopy);
         }
@@ -130,7 +129,7 @@ public class Day23 {
 
     private void followToggleInstruction(String instruction, int currentInstruction) {
         int howFarToToggle = howFarToToggle(instruction);
-        if(currentInstruction + howFarToToggle < instructions.size()) {
+        if (currentInstruction + howFarToToggle < instructions.size()) {
             String instructionToToggle = instructions.get(currentInstruction + howFarToToggle);
             if (isIncreaseInstruction(instructionToToggle)) {
                 instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("inc ", "dec "));
@@ -138,7 +137,7 @@ public class Day23 {
                 instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("dec ", "inc "));
             } else if (isToggleInstruction(instructionToToggle)) {
                 instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("tgl ", "inc "));
-            } else if(isCopyInstruction(instructionToToggle)) {
+            } else if (isCopyInstruction(instructionToToggle)) {
                 instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("cpy ", "jnz "));
             } else if (isJumpInstruction(instructionToToggle)) {
                 instructions.set(currentInstruction + howFarToToggle, instructionToToggle.replaceAll("jnz ", "cpy "));
@@ -199,7 +198,7 @@ public class Day23 {
 
     private int howManyToJump(String instruction) {
         int result = 0;
-        if(Utilities.isNumber(instruction.split(" ")[2])) {
+        if (Utilities.isNumber(instruction.split(" ")[2])) {
             result = Integer.parseInt(instruction.split(" ")[2]);
         } else {
             result = values.get(instruction.split(" ")[2].charAt(0));

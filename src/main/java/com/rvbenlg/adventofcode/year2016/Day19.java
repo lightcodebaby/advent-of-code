@@ -39,9 +39,9 @@ public class Day19 {
     private int happyIdea2() {
         boolean found = false;
         int base = 3;
-        while(!found) {
+        while (!found) {
             int auxBase = base * 3;
-            if(auxBase <= elves.size()) {
+            if (auxBase <= elves.size()) {
                 base = auxBase;
             } else {
                 found = true;

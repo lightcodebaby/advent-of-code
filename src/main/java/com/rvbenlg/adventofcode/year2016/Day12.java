@@ -77,7 +77,7 @@ public class Day12 {
         } else if (isDecreaseInstruction(instruction)) {
             followDecreaseInstruction(instruction);
         } else if (isJumpInstruction(instruction)) {
-            if(checkBeforeJumping(instruction)) {
+            if (checkBeforeJumping(instruction)) {
                 result = howManyToJump(instruction);
             }
         }
@@ -106,7 +106,7 @@ public class Day12 {
 
     private int getValueToCopy(String instruction) {
         int result = 0;
-        if(Utilities.isNumber(instruction.split(" ")[1])) {
+        if (Utilities.isNumber(instruction.split(" ")[1])) {
             result = Integer.parseInt(instruction.split(" ")[1]);
         } else {
             result = values.get(instruction.split(" ")[1].charAt(0));
@@ -140,8 +140,8 @@ public class Day12 {
 
     private boolean checkBeforeJumping(String instruction) {
         boolean jump = false;
-        if(Utilities.isNumber(instruction.split(" ")[1])) {
-            if(Integer.parseInt(instruction.split(" ")[1]) != 0) {
+        if (Utilities.isNumber(instruction.split(" ")[1])) {
+            if (Integer.parseInt(instruction.split(" ")[1]) != 0) {
                 jump = true;
             }
         } else {

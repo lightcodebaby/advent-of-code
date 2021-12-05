@@ -99,7 +99,7 @@ public class Day03 {
     private String getOxygenGeneratorRating(List<String> input) {
         int numbersLength = input.get(0).length();
         List<String> matches = new ArrayList<>(input);
-        for(int i = 0; i < numbersLength && matches.size() > 1; i++) {
+        for (int i = 0; i < numbersLength && matches.size() > 1; i++) {
             int position = i;
             char toMatch = mostCommon(matches, position);
             matches.removeIf(s -> s.charAt(position) != toMatch);
@@ -107,10 +107,10 @@ public class Day03 {
         return matches.get(0);
     }
 
-    private String getCO2ScrubberRating(List<String> input)  {
+    private String getCO2ScrubberRating(List<String> input) {
         int numbersLength = input.get(0).length();
         List<String> matches = new ArrayList<>(input);
-        for(int i = 0; i < numbersLength && matches.size() > 1; i++) {
+        for (int i = 0; i < numbersLength && matches.size() > 1; i++) {
             int position = i;
             char toMatch = leastCommon(matches, position);
             matches.removeIf(s -> s.charAt(position) != toMatch);
@@ -122,14 +122,14 @@ public class Day03 {
         int zeros = 0;
         int ones = 0;
         char result;
-        for(String number : input) {
-            if(number.charAt(position) == '0') {
+        for (String number : input) {
+            if (number.charAt(position) == '0') {
                 zeros++;
             } else {
                 ones++;
             }
         }
-        if(zeros > ones) {
+        if (zeros > ones) {
             result = '0';
         } else {
             result = '1';
@@ -141,14 +141,14 @@ public class Day03 {
         int zeros = 0;
         int ones = 0;
         char result;
-        for(String number : input) {
-            if(number.charAt(position) == '0') {
+        for (String number : input) {
+            if (number.charAt(position) == '0') {
                 zeros++;
             } else {
                 ones++;
             }
         }
-        if(zeros <= ones) {
+        if (zeros <= ones) {
             result = '0';
         } else {
             result = '1';
@@ -160,17 +160,17 @@ public class Day03 {
         StringBuilder mostCommonBuilder = new StringBuilder();
         StringBuilder leastCommonBuilder = new StringBuilder();
         int numbersLength = input.get(0).length();
-        for(int i = 0; i < numbersLength; i++) {
+        for (int i = 0; i < numbersLength; i++) {
             int zeros = 0;
             int ones = 0;
-            for(String number : input) {
-                if(number.charAt(i) == '0') {
+            for (String number : input) {
+                if (number.charAt(i) == '0') {
                     zeros++;
                 } else {
                     ones++;
                 }
             }
-            if(zeros > ones) {
+            if (zeros > ones) {
                 mostCommonBuilder.append(0);
                 leastCommonBuilder.append(1);
             } else {

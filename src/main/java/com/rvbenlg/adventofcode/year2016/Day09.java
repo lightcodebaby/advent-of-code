@@ -3,10 +3,8 @@ package com.rvbenlg.adventofcode.year2016;
 import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Day09 {
 
@@ -71,16 +69,16 @@ public class Day09 {
     private long totalLength(String data) {
         int[] values = getValuesArray(data);
         long result = 0;
-        for(int i = 0; i < values.length; i++) {
-            if(isMarker(data, i)) {
+        for (int i = 0; i < values.length; i++) {
+            if (isMarker(data, i)) {
                 String marker = getMarker(data, i);
                 int howManyCharactersToRepeat = howManyCharactersToRepeat(marker);
                 int howManyTimesToRepeat = howManyTimesToRepeat(marker);
                 int markerLength = marker.length() + 2;
-                for(int j = 0; j < markerLength; j++) {
+                for (int j = 0; j < markerLength; j++) {
                     values[i + j] = 0;
                 }
-                for(int j = 0; j < howManyCharactersToRepeat; j++) {
+                for (int j = 0; j < howManyCharactersToRepeat; j++) {
                     values[i + markerLength + j] *= howManyTimesToRepeat;
                 }
             } else {

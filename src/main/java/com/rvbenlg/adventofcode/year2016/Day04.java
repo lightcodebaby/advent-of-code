@@ -129,7 +129,7 @@ public class Day04 {
             String mostCommonLetters = mostCommonLetters(sortedLetters);
             if (isValidRoom(checksum, mostCommonLetters)) {
                 decryptedRoom = decryptRoomName(encryptedRoom, sectorId);
-                if(decryptedRoom.equals("northpole object storage")) {
+                if (decryptedRoom.equals("northpole object storage")) {
                     result = sectorId;
                 }
             }

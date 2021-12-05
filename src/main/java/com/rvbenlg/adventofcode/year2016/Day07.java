@@ -119,7 +119,7 @@ public class Day07 {
 
     private List<String> getAllAbas(List<String> outsideBrackets) {
         List<String> abas = new ArrayList<>();
-        for(String string : outsideBrackets) {
+        for (String string : outsideBrackets) {
             abas.addAll(getAbas(string));
         }
         return abas;
@@ -150,7 +150,6 @@ public class Day07 {
         }
         return babs;
     }
-
 
 
 }

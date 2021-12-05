@@ -74,20 +74,20 @@ public class Day02 {
 
     private void part1() throws IOException {
         resetVariables();
-        List<String> input  = Utilities.readInput("year2021/day02.txt");
+        List<String> input = Utilities.readInput("year2021/day02.txt");
         int result = move(input);
         System.out.println("Part 1 solution: " + result);
     }
 
     private void part2() throws IOException {
         resetVariables();
-        List<String> input  = Utilities.readInput("year2021/day02.txt");
+        List<String> input = Utilities.readInput("year2021/day02.txt");
         int result = move2(input);
         System.out.println("Part 2 solution: " + result);
     }
 
     private int move(List<String> input) {
-        for(String movement : input) {
+        for (String movement : input) {
             String[] parts = movement.split(" ");
             String howToMove = parts[0];
             String howLongToMove = parts[1];
@@ -119,7 +119,7 @@ public class Day02 {
     }
 
     private int move2(List<String> input) {
-        for(String movement : input) {
+        for (String movement : input) {
             String[] parts = movement.split(" ");
             String howToMove = parts[0];
             String howLongToMove = parts[1];

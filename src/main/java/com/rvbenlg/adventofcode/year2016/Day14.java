@@ -68,7 +68,7 @@ public class Day14 {
         resetVariables();
         List<String> input = Utilities.readInput("year2016/day14.txt");
         int result = 0;
-        for(String line : input) {
+        for (String line : input) {
             generateHashes(line, false);
             result = checkIndexes();
         }
@@ -79,7 +79,7 @@ public class Day14 {
         resetVariables();
         List<String> input = Utilities.readInput("year2016/day14.txt");
         int result = 0;
-        for(String line : input) {
+        for (String line : input) {
             generateHashes(line, true);
             result = checkIndexes();
         }
@@ -87,11 +87,11 @@ public class Day14 {
     }
 
     private void generateHashes(String salt, boolean part2) throws NoSuchAlgorithmException {
-        for(int i = 0; i < 22000; i++){
+        for (int i = 0; i < 22000; i++) {
             String auxSalt = salt + i;
             String hash = Utilities.md5(auxSalt);
-            if(part2) {
-                for(int j = 0; j < 2016; j++) {
+            if (part2) {
+                for (int j = 0; j < 2016; j++) {
                     hash = Utilities.md5(hash);
                 }
             }
@@ -102,13 +102,13 @@ public class Day14 {
     private int checkIndexes() {
         int lastIndex = 0;
         int indexes = 0;
-        for(int i = 0; i < hashes.size() && indexes < 64; i++) {
+        for (int i = 0; i < hashes.size() && indexes < 64; i++) {
             String hash = hashes.get(i);
             char threeTimes = sameCharacterThreeTimes(hash);
-            if(threeTimes != '*') {
+            if (threeTimes != '*') {
                 int finalI = i;
                 List<String> nextThousandHashes = hashes.subList(i + 1, i + 1001);
-                if(nextThousandHashes.stream().anyMatch(s -> sameCharacterFiveTimes(s) == threeTimes && nextThousandHashes.indexOf(s) < finalI + 1000)) {
+                if (nextThousandHashes.stream().anyMatch(s -> sameCharacterFiveTimes(s) == threeTimes && nextThousandHashes.indexOf(s) < finalI + 1000)) {
                     indexes++;
                     lastIndex = i;
                 }
