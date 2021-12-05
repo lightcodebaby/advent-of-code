@@ -58,6 +58,8 @@ public class Day23 {
     Anyway, what value should actually be sent to the safe?
      */
 
+
+
     private HashMap<Character, Integer> values = new HashMap<>();
     private List<String> instructions = new ArrayList<>();
 

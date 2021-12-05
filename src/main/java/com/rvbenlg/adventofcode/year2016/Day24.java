@@ -21,11 +21,13 @@ public class Day24 {
     private void part1() throws IOException {
         layout = Utilities.readInput("year2016/day24.txt");
         fillMatrix();
-        move();
+        int steps = move();
+        System.out.println("Part 1 solution: " + steps);
 
     }
 
-    private void move() {
+    private int move() {
+        int result = 0;
         List<Path> paths = new ArrayList<>();
         paths.add(getFirstPath());
         while(paths.stream().noneMatch(path -> path.visitedLocations.size() == locations.size())) {
@@ -36,16 +38,16 @@ public class Day24 {
                 if(checkIfNewLocation(path)) {
                     haveVisitedNewLocation.add(path);
                 } else {
-                    if(canGoUp(currentCoordinate, path.coordinates)) {
+                    if(canGoUp(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
                         paths.add(new Path(path, new Coordinate(currentCoordinate.x, currentCoordinate.y - 1)));
                     }
-                    if(canGoDown(currentCoordinate, path.coordinates)) {
+                    if(canGoDown(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
                         paths.add(new Path(path, new Coordinate(currentCoordinate.x, currentCoordinate.y + 1)));
                     }
-                    if(canGoLeft(currentCoordinate, path.coordinates)) {
+                    if(canGoLeft(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
                         paths.add(new Path(path, new Coordinate(currentCoordinate.x - 1, currentCoordinate.y)));
                     }
-                    if(canGoRight(currentCoordinate, path.coordinates)) {
+                    if(canGoRight(currentCoordinate, getPathsWithSameVisitedLocations(path, paths))) {
                         paths.add(new Path(path, new Coordinate(currentCoordinate.x + 1, currentCoordinate.y)));
                     }
                     path.checked = true;
@@ -54,21 +56,11 @@ public class Day24 {
             if(haveVisitedNewLocation.size() > 0) {
                 updatePaths(paths, haveVisitedNewLocation);
             } else {
-                removePathsWithSameCoordinate(paths);
+                paths.removeIf(path -> path.checked);
+                result++;
             }
         }
-    }
-
-    private void removePathsWithSameCoordinate(List<Path> paths) {
-        List<Path> auxPaths = new ArrayList<>();
-        for(Path path : paths) {
-            Coordinate pathCurrentCoordinate = path.coordinates.get(path.coordinates.size() - 1);
-            List<Coordinate> allCurrentCoordinates = auxPaths.stream().map(path1 -> path1.coordinates.get(path1.coordinates.size() - 1)).collect(Collectors.toList());
-            if(allCurrentCoordinates.stream().noneMatch(coordinate -> coordinate.x == pathCurrentCoordinate.x && coordinate.y == pathCurrentCoordinate.y)) {
-                auxPaths.add(path);
-            }
-        }
-        paths.removeIf(path -> !auxPaths.contains(path));
+        return result;
     }
 
     private void updatePaths(List<Path> paths, List<Path> haveVisitedNewLocation) {
@@ -104,33 +96,41 @@ public class Day24 {
     }
 
 
-    private boolean canGoUp(Coordinate coordinate, List<Coordinate> coordinates) {
+    private boolean canGoUp(Coordinate coordinate, List<Path> paths) {
         boolean result = false;
-        if (coordinate.y > 0 && coordinates.stream().noneMatch(coordinate1 -> coordinate1.y == coordinate.y - 1 && coordinate1.x == coordinate.x)) {
+        List<Coordinate> coordinatesToCheck = new ArrayList<>();
+        paths.forEach(path -> coordinatesToCheck.addAll(path.coordinates));
+        if (coordinate.y > 0 && coordinatesToCheck.stream().noneMatch(coordinate1 -> coordinate1.y == coordinate.y - 1 && coordinate1.x == coordinate.x)) {
             result = matrix[coordinate.y - 1][coordinate.x] != '#';
         }
         return result;
     }
 
-    private boolean canGoDown(Coordinate coordinate, List<Coordinate> coordinates) {
+    private boolean canGoDown(Coordinate coordinate, List<Path> paths) {
         boolean result = false;
-        if (coordinate.y < layout.size() - 1 && coordinates.stream().noneMatch(coordinate1 -> coordinate1.y == coordinate.y + 1 && coordinate1.x == coordinate.x)) {
+        List<Coordinate> coordinatesToCheck = new ArrayList<>();
+        paths.forEach(path -> coordinatesToCheck.addAll(path.coordinates));
+        if (coordinate.y < layout.size() - 1 && coordinatesToCheck.stream().noneMatch(coordinate1 -> coordinate1.y == coordinate.y + 1 && coordinate1.x == coordinate.x)) {
             result = matrix[coordinate.y + 1][coordinate.x] != '#';
         }
         return result;
     }
 
-    private boolean canGoLeft(Coordinate coordinate, List<Coordinate> coordinates) {
+    private boolean canGoLeft(Coordinate coordinate, List<Path> paths) {
         boolean result = false;
-        if (coordinate.x > 0 && coordinates.stream().noneMatch(coordinate1 -> coordinate1.y == coordinate.y && coordinate1.x == coordinate.x - 1)) {
+        List<Coordinate> coordinatesToCheck = new ArrayList<>();
+        paths.forEach(path -> coordinatesToCheck.addAll(path.coordinates));
+        if (coordinate.x > 0 && coordinatesToCheck.stream().noneMatch(coordinate1 -> coordinate1.y == coordinate.y && coordinate1.x == coordinate.x - 1)) {
             result = matrix[coordinate.y][coordinate.x - 1] != '#';
         }
         return result;
     }
 
-    private boolean canGoRight(Coordinate coordinate, List<Coordinate> coordinates) {
+    private boolean canGoRight(Coordinate coordinate, List<Path> paths) {
         boolean result = false;
-        if (coordinate.x < layout.get(0).length() && coordinates.stream().noneMatch(coordinate1 -> coordinate1.y == coordinate.y && coordinate1.x == coordinate.x + 1)) {
+        List<Coordinate> coordinatesToCheck = new ArrayList<>();
+        paths.forEach(path -> coordinatesToCheck.addAll(path.coordinates));
+        if (coordinate.x < layout.get(0).length() && coordinatesToCheck.stream().noneMatch(coordinate1 -> coordinate1.y == coordinate.y && coordinate1.x == coordinate.x + 1)) {
             result = matrix[coordinate.y][coordinate.x + 1] != '#';
         }
         return result;
@@ -147,6 +147,19 @@ public class Day24 {
                 }
             }
         }
+    }
+
+    private List<Path> getPathsWithSameVisitedLocations(Path path, List<Path> paths) {
+        List<Integer> visitedLocations = path.visitedLocations.stream().map(location -> location.value).collect(Collectors.toList());
+        List<Path> result = new ArrayList<>();
+        result.add(path);
+        for(Path auxPath : paths) {
+            List<Integer> auxVisitedLocations = auxPath.visitedLocations.stream().map(location -> location.value).collect(Collectors.toList());
+            if(visitedLocations.size() > 1 && visitedLocations.containsAll(auxVisitedLocations)) {
+                result.add(auxPath);
+            }
+        }
+        return result;
     }
 
 

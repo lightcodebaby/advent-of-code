@@ -1,3 +1,4 @@
+cpy 12 a
 cpy a b
 dec b
 cpy a d
