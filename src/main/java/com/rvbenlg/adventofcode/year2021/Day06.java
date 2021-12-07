@@ -109,7 +109,7 @@ public class Day06 {
                 timersMap.remove(-1);
             }
         }
-        for(int key : timersMap.keySet()) {
+        for (int key : timersMap.keySet()) {
             result += timersMap.get(key);
         }
         return result;
