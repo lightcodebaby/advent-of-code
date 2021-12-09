@@ -10,6 +10,39 @@ import java.util.stream.Collectors;
 
 public class Day24 {
 
+    /*
+    --- Day 24: Air Duct Spelunking ---
+    You've finally met your match; the doors that provide access to the roof are locked tight, and all of the controls and related electronics are inaccessible. You simply can't reach them.
+
+    The robot that cleans the air ducts, however, can.
+
+    It's not a very fast little robot, but you reconfigure it to be able to interface with some of the exposed wires that have been routed through the HVAC system. If you can direct it to each of those locations, you should be able to bypass the security controls.
+
+    You extract the duct layout for this area from some blueprints you acquired and create a map with the relevant locations marked (your puzzle input). 0 is your current location, from which the cleaning robot embarks; the other numbers are (in no particular order) the locations the robot needs to visit at least once each. Walls are marked as #, and open passages are marked as .. Numbers behave like open passages.
+
+    For example, suppose you have a map like the following:
+
+    ###########
+    #0.1.....2#
+    #.#######.#
+    #4.......3#
+    ###########
+    To reach all of the points of interest as quickly as possible, you would have the robot take the following path:
+
+    0 to 4 (2 steps)
+    4 to 1 (4 steps; it can't move diagonally)
+    1 to 2 (6 steps)
+    2 to 3 (2 steps)
+    Since the robot isn't very fast, you need to find it the shortest route. This path is the fewest steps (in the above example, a total of 14) required to start at 0 and then visit every other location at least once.
+
+    Given your actual map, and starting from location 0, what is the fewest number of steps required to visit every non-0 number marked on the map at least once?
+
+    --- Part Two ---
+    Of course, if you leave the cleaning robot somewhere weird, someone is bound to notice.
+
+    What is the fewest number of steps required to start at 0, visit every non-0 number marked on the map at least once, and then return to 0?
+     */
+
     private List<String> layout = new ArrayList<>();
     private char[][] matrix = new char[0][0];
     private boolean[][] permissions = new boolean[0][0];
@@ -18,9 +51,11 @@ public class Day24 {
 
     public void solve() throws IOException {
         part1();
+        part2();
     }
 
     private void part1() throws IOException {
+        resetVariables();
         layout = Utilities.readInput("year2016/day24.txt");
         fillMatrix();
         simplifyMatrix();
@@ -29,6 +64,37 @@ public class Day24 {
         fillLocations();
         int result = move();
         System.out.println("Part 1 solution: " + result);
+    }
+
+    private void part2() throws IOException {
+        resetVariables();
+        layout = Utilities.readInput("year2016/day24.txt");
+        fillMatrix();
+        simplifyMatrix();
+        fillPermissions();
+        fillCoordinates();
+        fillLocations();
+        int result = goAndComeBack();
+        System.out.println("Part 2 solution: " + result);
+    }
+
+    private int goAndComeBack() {
+        Coordinate origin = locations.stream().filter(location -> location.value == 0).findFirst().get().coordinate;
+        List<Path> paths = new ArrayList<>();
+        paths.add(getFirstPath());
+        int result = 0;
+        while(paths.stream().noneMatch(path -> path.visitedLocations.size() == locations.size() && path.coordinates.get(path.coordinates.size() - 1).equals(origin))) {
+            List<Path> newPaths = paths.stream().filter(path -> !path.checked).collect(Collectors.toList());
+            for(Path path : newPaths) {
+                Coordinate currentCoordinate = path.coordinates.get(path.coordinates.size() - 1);
+                visitingNewLocation(path, currentCoordinate);
+                paths.addAll(getNextPaths(path, currentCoordinate, paths));
+                path.checked = true;
+            }
+            paths.removeIf(path -> path.checked || paths.stream().anyMatch(path1 -> path1.visitedLocations.size() > path.visitedLocations.size() + 1));
+            result++;
+        }
+        return result;
     }
 
     private int move() {
@@ -62,7 +128,7 @@ public class Day24 {
             paths.add(new Path(path, coordinates[currentCoordinate.row][currentCoordinate.column - 1], path.steps + "L"));
         }
         if(permissions[currentCoordinate.row][currentCoordinate.column + 1] && equivalentPaths.stream().noneMatch(path1 -> path1.coordinates.contains(coordinates[currentCoordinate.row][currentCoordinate.column + 1]))) {
-            paths.add(new Path(path, coordinates[currentCoordinate.row][currentCoordinate.column + 1], path.steps + "L"));
+            paths.add(new Path(path, coordinates[currentCoordinate.row][currentCoordinate.column + 1], path.steps + "R"));
         }
         return result;
     }
@@ -172,6 +238,14 @@ public class Day24 {
             walls++;
         }
         return walls;
+    }
+
+    private void resetVariables() {
+        layout = new ArrayList<>();
+        matrix = new char[0][0];
+        permissions = new boolean[0][0];
+        coordinates = new Coordinate[0][0];
+        locations = new ArrayList<>();
     }
 
     private class Path {
