@@ -364,11 +364,11 @@ public class Day11 {
         resetVariables();
         List<String> input = Utilities.readInput("year2021/day11.txt");
         parseOctopuses(input);
-        int result = waitForAllTheOctopusesToFlashSimultaneously();
+        int result = whenAllTheOctopusesToFlashSimultaneously();
         System.out.println("Part 2 solution: " + result);
     }
 
-    private int waitForAllTheOctopusesToFlashSimultaneously() {
+    private int whenAllTheOctopusesToFlashSimultaneously() {
         int result = 0;
         int howManyOctopusesFlashed = 0;
         do {
