@@ -267,12 +267,13 @@ public class Day22 {
     }
 
     private class Node {
-        private int x;
-        private int y;
-        private int size;
-        private int used;
-        private int avail;
-        private boolean checked;
+
+        int x;
+        int y;
+        int size;
+        int used;
+        int avail;
+        boolean checked;
 
         private Node(int x, int y, int size, int used, int avail) {
             this.x = x;

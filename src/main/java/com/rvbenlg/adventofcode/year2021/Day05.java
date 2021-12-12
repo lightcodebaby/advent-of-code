@@ -189,6 +189,7 @@ public class Day05 {
     }
 
     private class Line {
+
         int initX;
         int initY;
         int endX;

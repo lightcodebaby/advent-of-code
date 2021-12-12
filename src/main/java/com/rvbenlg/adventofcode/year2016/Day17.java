@@ -167,11 +167,11 @@ public class Day17 {
 
     private class Path {
 
-        private int posX;
-        private int posY;
-        private String path;
-        private String hash;
-        private boolean checked;
+        int posX;
+        int posY;
+        String path;
+        String hash;
+        boolean checked;
 
         private Path(int posX, int posY, String path, String hash) {
             this.posX = posX;

@@ -211,6 +211,7 @@ public class Day11 {
     }
 
     private class Floor {
+
         int number;
         int[] elements;
 

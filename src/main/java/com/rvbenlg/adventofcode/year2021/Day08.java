@@ -111,18 +111,18 @@ public class Day08 {
 
         String data;
         String[] inputs;
-        private String one;
-        private String four;
-        private String seven;
-        private String eight;
+        String one;
+        String four;
+        String seven;
+        String eight;
         List<String> zeroSixNine;
-        private char top;
-        private char topLeft;
-        private char topRight;
-        private char middle;
-        private char bottomLeft;
-        private char bottomRight;
-        private char bottom;
+        char top;
+        char topLeft;
+        char topRight;
+        char middle;
+        char bottomLeft;
+        char bottomRight;
+        char bottom;
 
         private Eight(String data) {
             this.data = data;

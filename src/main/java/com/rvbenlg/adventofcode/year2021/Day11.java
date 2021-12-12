@@ -485,10 +485,10 @@ public class Day11 {
 
     private class Octopus {
 
-        private int row;
-        private int column;
-        private int energyLevel;
-        private boolean hasFlashed;
+        int row;
+        int column;
+        int energyLevel;
+        boolean hasFlashed;
 
         private Octopus(int row, int column, int energyLevel) {
             this.row = row;

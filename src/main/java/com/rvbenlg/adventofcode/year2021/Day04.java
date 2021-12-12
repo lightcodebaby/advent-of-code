@@ -231,6 +231,7 @@ public class Day04 {
     }
 
     private class Board {
+
         Number[][] matrix;
 
         private Board(Number[][] matrix) {
@@ -239,6 +240,7 @@ public class Day04 {
     }
 
     private class Number {
+
         int value;
         boolean marked;
 

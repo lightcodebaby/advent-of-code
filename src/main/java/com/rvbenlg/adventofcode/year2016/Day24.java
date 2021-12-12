@@ -250,9 +250,9 @@ public class Day24 {
 
     private class Path {
 
-        private List<Coordinate> coordinates;
-        private List<Integer> visitedLocations;
-        private boolean checked;
+        List<Coordinate> coordinates;
+        List<Integer> visitedLocations;
+        boolean checked;
         private String steps;
 
         private Path() {
@@ -274,8 +274,8 @@ public class Day24 {
 
     private class Coordinate {
 
-        private int row;
-        private int column;
+        int row;
+        int column;
 
         private Coordinate(int row, int column) {
             this.row = row;
@@ -285,8 +285,8 @@ public class Day24 {
 
     private class Location {
 
-        private int value;
-        private Coordinate coordinate;
+        int value;
+        Coordinate coordinate;
 
         private Location(Coordinate coordinate, int value) {
             this.coordinate = coordinate;

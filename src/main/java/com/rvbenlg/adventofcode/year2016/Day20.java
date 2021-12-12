@@ -95,8 +95,9 @@ public class Day20 {
     }
 
     private class BlackListRange {
-        private long min;
-        private long max;
+
+        long min;
+        long max;
 
         private BlackListRange(long min, long max) {
             this.min = min;

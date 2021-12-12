@@ -220,12 +220,12 @@ public class Day09 {
 
     private class Coordinate {
 
-        private int row;
-        private int column;
-        private int value;
-        private boolean checked;
-        private boolean lowPoint;
-        private int basinSize;
+        int row;
+        int column;
+        int value;
+        boolean checked;
+        boolean lowPoint;
+        int basinSize;
 
         private Coordinate(int row, int column, int value) {
             this.row = row;

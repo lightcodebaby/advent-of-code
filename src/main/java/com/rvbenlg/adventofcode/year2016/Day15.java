@@ -97,9 +97,10 @@ public class Day15 {
     }
 
     private class Disc {
-        private int id;
-        private int currentPosition;
-        private int positions;
+
+        int id;
+        int currentPosition;
+        int positions;
 
         private Disc(int id, int currentPosition, int positions) {
             this.id = id;

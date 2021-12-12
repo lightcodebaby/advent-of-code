@@ -186,9 +186,10 @@ public class Day13 {
 
 
     private class Position {
-        private int x;
-        private int y;
-        private boolean toExplore;
+
+        int x;
+        int y;
+        boolean toExplore;
 
         private Position(int x, int y, boolean toExplore) {
             this.x = x;
