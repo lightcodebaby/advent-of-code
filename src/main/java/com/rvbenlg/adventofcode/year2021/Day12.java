@@ -197,9 +197,9 @@ public class Day12 {
 
     private boolean hasVisitedTwiceASmallCave(List<Coordinate> path) {
         boolean result = false;
-        for(int i = 0; i < path.size() && !result; i++) {
+        for (int i = 0; i < path.size() && !result; i++) {
             Coordinate coordinate = path.get(i);
-            if(coordinate.isLowercase && path.stream().filter(coordinate1 -> coordinate1.identifier.equals(coordinate.identifier)).count() > 1) {
+            if (coordinate.isLowercase && path.stream().filter(coordinate1 -> coordinate1.identifier.equals(coordinate.identifier)).count() > 1) {
                 result = true;
             }
         }

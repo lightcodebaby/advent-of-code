@@ -83,9 +83,9 @@ public class Day24 {
         List<Path> paths = new ArrayList<>();
         paths.add(getFirstPath());
         int result = 0;
-        while(paths.stream().noneMatch(path -> path.visitedLocations.size() == locations.size() && path.coordinates.get(path.coordinates.size() - 1).equals(origin))) {
+        while (paths.stream().noneMatch(path -> path.visitedLocations.size() == locations.size() && path.coordinates.get(path.coordinates.size() - 1).equals(origin))) {
             List<Path> newPaths = paths.stream().filter(path -> !path.checked).collect(Collectors.toList());
-            for(Path path : newPaths) {
+            for (Path path : newPaths) {
                 Coordinate currentCoordinate = path.coordinates.get(path.coordinates.size() - 1);
                 visitingNewLocation(path, currentCoordinate);
                 paths.addAll(getNextPaths(path, currentCoordinate, paths));
@@ -101,9 +101,9 @@ public class Day24 {
         List<Path> paths = new ArrayList<>();
         paths.add(getFirstPath());
         int result = 0;
-        while(paths.stream().noneMatch(path -> path.visitedLocations.size() == locations.size())) {
+        while (paths.stream().noneMatch(path -> path.visitedLocations.size() == locations.size())) {
             List<Path> newPaths = paths.stream().filter(path -> !path.checked).collect(Collectors.toList());
-            for(Path path : newPaths) {
+            for (Path path : newPaths) {
                 Coordinate currentCoordinate = path.coordinates.get(path.coordinates.size() - 1);
                 visitingNewLocation(path, currentCoordinate);
                 paths.addAll(getNextPaths(path, currentCoordinate, paths));
@@ -118,16 +118,16 @@ public class Day24 {
     private List<Path> getNextPaths(Path path, Coordinate currentCoordinate, List<Path> paths) {
         List<Path> result = new ArrayList<>();
         List<Path> equivalentPaths = getPathsWithSameLocations(path, paths);
-        if(permissions[currentCoordinate.row - 1][currentCoordinate.column] && equivalentPaths.stream().noneMatch(path1 -> path1.coordinates.contains(coordinates[currentCoordinate.row - 1][currentCoordinate.column]))) {
+        if (permissions[currentCoordinate.row - 1][currentCoordinate.column] && equivalentPaths.stream().noneMatch(path1 -> path1.coordinates.contains(coordinates[currentCoordinate.row - 1][currentCoordinate.column]))) {
             paths.add(new Path(path, coordinates[currentCoordinate.row - 1][currentCoordinate.column], path.steps + "U"));
         }
-        if(permissions[currentCoordinate.row + 1][currentCoordinate.column] && equivalentPaths.stream().noneMatch(path1 -> path1.coordinates.contains(coordinates[currentCoordinate.row + 1][currentCoordinate.column]))) {
+        if (permissions[currentCoordinate.row + 1][currentCoordinate.column] && equivalentPaths.stream().noneMatch(path1 -> path1.coordinates.contains(coordinates[currentCoordinate.row + 1][currentCoordinate.column]))) {
             paths.add(new Path(path, coordinates[currentCoordinate.row + 1][currentCoordinate.column], path.steps + "D"));
         }
-        if(permissions[currentCoordinate.row][currentCoordinate.column - 1] && equivalentPaths.stream().noneMatch(path1 -> path1.coordinates.contains(coordinates[currentCoordinate.row][currentCoordinate.column - 1]))) {
+        if (permissions[currentCoordinate.row][currentCoordinate.column - 1] && equivalentPaths.stream().noneMatch(path1 -> path1.coordinates.contains(coordinates[currentCoordinate.row][currentCoordinate.column - 1]))) {
             paths.add(new Path(path, coordinates[currentCoordinate.row][currentCoordinate.column - 1], path.steps + "L"));
         }
-        if(permissions[currentCoordinate.row][currentCoordinate.column + 1] && equivalentPaths.stream().noneMatch(path1 -> path1.coordinates.contains(coordinates[currentCoordinate.row][currentCoordinate.column + 1]))) {
+        if (permissions[currentCoordinate.row][currentCoordinate.column + 1] && equivalentPaths.stream().noneMatch(path1 -> path1.coordinates.contains(coordinates[currentCoordinate.row][currentCoordinate.column + 1]))) {
             paths.add(new Path(path, coordinates[currentCoordinate.row][currentCoordinate.column + 1], path.steps + "R"));
         }
         return result;
@@ -138,9 +138,9 @@ public class Day24 {
     }
 
     private void visitingNewLocation(Path path, Coordinate currentCoordinate) {
-        if(isLocation(currentCoordinate)) {
+        if (isLocation(currentCoordinate)) {
             Location location = getLocation(currentCoordinate);
-            if(!path.visitedLocations.contains(location.value)) {
+            if (!path.visitedLocations.contains(location.value)) {
                 path.visitedLocations.add(location.value);
                 path.coordinates.removeIf(coordinate -> !coordinate.equals(currentCoordinate));
                 path.checked = false;
@@ -167,10 +167,10 @@ public class Day24 {
     }
 
     private void fillLocations() {
-        for(int i = 0; i < matrix.length; i++) {
-            for(int j = 0; j < matrix[i].length; j++) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
                 String value = String.valueOf(matrix[i][j]);
-                if(Utilities.isNumber(value)) {
+                if (Utilities.isNumber(value)) {
                     locations.add(new Location(coordinates[i][j], Integer.parseInt(value)));
                 }
             }
@@ -179,9 +179,9 @@ public class Day24 {
 
     private void fillCoordinates() {
         coordinates = new Coordinate[matrix.length][];
-        for(int i = 0; i < matrix.length; i++) {
+        for (int i = 0; i < matrix.length; i++) {
             coordinates[i] = new Coordinate[matrix[i].length];
-            for(int j = 0; j < matrix[i].length; j++) {
+            for (int j = 0; j < matrix[i].length; j++) {
                 coordinates[i][j] = new Coordinate(i, j);
             }
         }
@@ -189,9 +189,9 @@ public class Day24 {
 
     private void fillPermissions() {
         permissions = new boolean[matrix.length][];
-        for(int i = 0; i < matrix.length; i++) {
+        for (int i = 0; i < matrix.length; i++) {
             permissions[i] = new boolean[matrix[i].length];
-            for(int j = 0; j < matrix[i].length; j++) {
+            for (int j = 0; j < matrix[i].length; j++) {
                 permissions[i][j] = matrix[i][j] != '#';
             }
         }
@@ -211,14 +211,14 @@ public class Day24 {
         for (int i = 0; i < matrix.length && !simplified; i++) {
             for (int j = 0; j < matrix[i].length && !simplified; j++) {
                 if (matrix[i][j] == '.') {
-                    if(wallsAround(i, j) >= 3) {
+                    if (wallsAround(i, j) >= 3) {
                         matrix[i][j] = '#';
                         simplified = true;
                     }
                 }
             }
         }
-        if(simplified) {
+        if (simplified) {
             simplifyMatrix();
         }
     }

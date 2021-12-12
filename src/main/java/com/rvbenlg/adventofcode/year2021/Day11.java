@@ -406,14 +406,14 @@ public class Day11 {
         boolean anyFlashes = false;
         for (int i = 0; i < octopuses.length && !anyFlashes; i++) {
             for (int j = 0; j < octopuses[i].length && !anyFlashes; j++) {
-                if(octopuses[i][j].energyLevel > 9 && !octopuses[i][j].hasFlashed) {
+                if (octopuses[i][j].energyLevel > 9 && !octopuses[i][j].hasFlashed) {
                     octopuses[i][j].hasFlashed = true;
                     increaseAdjacentOctopusesEnergy(i, j);
                     anyFlashes = true;
                 }
             }
         }
-        if(anyFlashes) {
+        if (anyFlashes) {
             flash();
         }
     }
@@ -422,7 +422,7 @@ public class Day11 {
         int result = 0;
         for (int i = 0; i < octopuses.length; i++) {
             for (int j = 0; j < octopuses[i].length; j++) {
-                if(octopuses[i][j].hasFlashed || octopuses[i][j].energyLevel > 9) {
+                if (octopuses[i][j].hasFlashed || octopuses[i][j].energyLevel > 9) {
                     result++;
                 }
             }
@@ -433,7 +433,7 @@ public class Day11 {
     private void updateOctopusesEnergy() {
         for (int i = 0; i < octopuses.length; i++) {
             for (int j = 0; j < octopuses[i].length; j++) {
-                if(octopuses[i][j].hasFlashed || octopuses[i][j].energyLevel > 9) {
+                if (octopuses[i][j].hasFlashed || octopuses[i][j].energyLevel > 9) {
                     octopuses[i][j].energyLevel = 0;
                     octopuses[i][j].hasFlashed = false;
                 }
@@ -442,28 +442,28 @@ public class Day11 {
     }
 
     private void increaseAdjacentOctopusesEnergy(int row, int column) {
-        if(row > 0) {
+        if (row > 0) {
             octopuses[row - 1][column].energyLevel++;
         }
-        if(row < octopuses.length - 1) {
+        if (row < octopuses.length - 1) {
             octopuses[row + 1][column].energyLevel++;
         }
-        if(column > 0) {
+        if (column > 0) {
             octopuses[row][column - 1].energyLevel++;
         }
-        if(column < octopuses[row].length - 1) {
+        if (column < octopuses[row].length - 1) {
             octopuses[row][column + 1].energyLevel++;
         }
-        if(row > 0 && column > 0) {
+        if (row > 0 && column > 0) {
             octopuses[row - 1][column - 1].energyLevel++;
         }
-        if(row < octopuses.length - 1 && column > 0) {
+        if (row < octopuses.length - 1 && column > 0) {
             octopuses[row + 1][column - 1].energyLevel++;
         }
-        if(row > 0 && column < octopuses[row].length - 1) {
+        if (row > 0 && column < octopuses[row].length - 1) {
             octopuses[row - 1][column + 1].energyLevel++;
         }
-        if(row < octopuses.length - 1 && column < octopuses[row].length - 1) {
+        if (row < octopuses.length - 1 && column < octopuses[row].length - 1) {
             octopuses[row + 1][column + 1].energyLevel++;
         }
     }

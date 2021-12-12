@@ -91,13 +91,13 @@ public class Day07 {
 
     private int alignPositionsP2() {
         int result = Integer.MAX_VALUE;
-        for(int i = minPosition; i <= maxPosition; i++) {
+        for (int i = minPosition; i <= maxPosition; i++) {
             int auxResult = 0;
-            for(int j = 0; j < horizontalPositions.length && auxResult <= result; j++) {
+            for (int j = 0; j < horizontalPositions.length && auxResult <= result; j++) {
                 int distance = Math.abs(horizontalPositions[j] - i);
-                auxResult += (distance * (distance + 1)) / 2 ;
+                auxResult += (distance * (distance + 1)) / 2;
             }
-            if(auxResult <= result) {
+            if (auxResult <= result) {
                 result = auxResult;
             }
         }
@@ -106,12 +106,12 @@ public class Day07 {
 
     private int alignPositionsP1() {
         int result = Integer.MAX_VALUE;
-        for(int i = minPosition; i <= maxPosition; i++) {
+        for (int i = minPosition; i <= maxPosition; i++) {
             int auxResult = 0;
-            for(int j = 0; j < horizontalPositions.length && auxResult <= result; j++) {
+            for (int j = 0; j < horizontalPositions.length && auxResult <= result; j++) {
                 auxResult += Math.abs(horizontalPositions[j] - i);
             }
-            if(auxResult <= result) {
+            if (auxResult <= result) {
                 result = auxResult;
             }
         }
@@ -121,11 +121,11 @@ public class Day07 {
     private void getMaxAndMin() {
         int max = horizontalPositions[0];
         int min = horizontalPositions[0];
-        for(int position : horizontalPositions) {
-            if(position > max) {
+        for (int position : horizontalPositions) {
+            if (position > max) {
                 max = position;
             }
-            if(position < min) {
+            if (position < min) {
                 min = position;
             }
         }
@@ -136,7 +136,7 @@ public class Day07 {
     private void parseHorizontalPositions(String positions) {
         String[] strHorizontalPositions = positions.split(",");
         horizontalPositions = new int[strHorizontalPositions.length];
-        for(int i = 0; i < horizontalPositions.length; i++) {
+        for (int i = 0; i < horizontalPositions.length; i++) {
             horizontalPositions[i] = Integer.parseInt(strHorizontalPositions[i]);
         }
     }

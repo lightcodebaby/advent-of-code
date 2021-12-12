@@ -37,7 +37,7 @@ public class Day08 {
             String data = input.get(i);
             Eight eight = new Eight(data);
             String[] outputs = data.split("\\|")[1].trim().split(" ");
-            for(int j = 0; j < outputs.length; j++) {
+            for (int j = 0; j < outputs.length; j++) {
                 String output = outputs[j];
                 auxResult += (number(output, eight) * Math.pow(10, outputs.length - j - 1));
             }
@@ -143,7 +143,7 @@ public class Day08 {
 
         private void findTop() {
             char result = ' ';
-            for (char c: seven.toCharArray()) {
+            for (char c : seven.toCharArray()) {
                 if (!one.contains(String.valueOf(c))) {
                     result = c;
                 }
@@ -172,6 +172,7 @@ public class Day08 {
             }
             bottomRight = result;
         }
+
         private void findMiddle() {
             char result = ' ';
             for (char c : four.toCharArray()) {

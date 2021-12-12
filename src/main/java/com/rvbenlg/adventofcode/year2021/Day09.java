@@ -137,7 +137,7 @@ public class Day09 {
             Set<Coordinate> newBasins = new HashSet<>();
             basins.stream().filter(coordinate1 -> !coordinate1.checked).forEach(coordinate1 -> {
                 newBasins.addAll(getBasins(coordinate1));
-                coordinate1.checked=true;
+                coordinate1.checked = true;
             });
             basins.addAll(newBasins);
         }
