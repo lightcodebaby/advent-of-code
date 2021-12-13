@@ -156,15 +156,15 @@ public class Day13 {
     private String solutionToPrint() {
         StringBuilder solutionBuilder = new StringBuilder();
         solutionBuilder.append("\n");
-        for(int i = 0; i < maxY; i++) {
-            for(int j = 0; j < maxX; j++) {
-                if(markedPositions[i][j]) {
+        for (int i = 0; i < maxY; i++) {
+            for (int j = 0; j < maxX; j++) {
+                if (markedPositions[i][j]) {
                     solutionBuilder.append("#");
                 } else {
                     solutionBuilder.append(".");
                 }
             }
-            if(i < maxY - 1) {
+            if (i < maxY - 1) {
                 solutionBuilder.append("\n");
             }
         }
@@ -173,9 +173,9 @@ public class Day13 {
 
     private int howManyDotsAreVisible() {
         int result = 0;
-        for(int i = 0; i < markedPositions.length; i++) {
-            for(int j = 0; j < markedPositions[i].length; j++) {
-                if(markedPositions[i][j]) {
+        for (int i = 0; i < markedPositions.length; i++) {
+            for (int j = 0; j < markedPositions[i].length; j++) {
+                if (markedPositions[i][j]) {
                     result++;
                 }
             }

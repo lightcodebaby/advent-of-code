@@ -136,7 +136,7 @@ public class Day10 {
 
     private long calculateAutoCompleteScore(List<Character> sequenceToClose) {
         long result = 0L;
-        for(int i = sequenceToClose.size() - 1; i >= 0; i--) {
+        for (int i = sequenceToClose.size() - 1; i >= 0; i--) {
             result *= 5;
             result += getAutoCompleteScore(sequenceToClose.get(i));
         }
