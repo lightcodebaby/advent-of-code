@@ -42,7 +42,7 @@ public class Day04 {
 
     private int encryptUntilStartsWithFiveZeroes(String toEncrypt) throws NoSuchAlgorithmException {
         int result = 0;
-        while(!Utilities.md5(toEncrypt + result).startsWith("00000")) {
+        while (!Utilities.md5(toEncrypt + result).startsWith("00000")) {
             result++;
         }
         return result;
@@ -50,7 +50,7 @@ public class Day04 {
 
     private int encryptUntilStartsWithSixZeroes(String toEncrypt) throws NoSuchAlgorithmException {
         int result = 0;
-        while(!Utilities.md5(toEncrypt + result).startsWith("000000")) {
+        while (!Utilities.md5(toEncrypt + result).startsWith("000000")) {
             result++;
         }
         return result;

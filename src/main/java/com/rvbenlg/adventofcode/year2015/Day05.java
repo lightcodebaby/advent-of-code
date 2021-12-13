@@ -77,8 +77,8 @@ public class Day05 {
 
     private boolean containsAtLeastOneLetterWhichRepeatsWithOneLetterBetweemThem(String string) {
         boolean result = false;
-        for(int i = 1; i < string.length() - 1 && !result; i++) {
-            if(string.charAt(i - 1) == string.charAt(i + 1)) {
+        for (int i = 1; i < string.length() - 1 && !result; i++) {
+            if (string.charAt(i - 1) == string.charAt(i + 1)) {
                 result = true;
             }
         }
@@ -91,7 +91,7 @@ public class Day05 {
             for (int j = i + 1; j < string.length() && !result; j++) {
                 String pair = string.substring(i, i + 1) + string.substring(j, j + 1);
                 String aux = string.replaceFirst(pair, "**");
-                if(aux.contains(pair)) {
+                if (aux.contains(pair)) {
                     result = true;
                 }
             }
