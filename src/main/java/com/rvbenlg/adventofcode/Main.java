@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 
 public class Main {
 
-    public static final int YEAR = 2015;
-    public static final int DAY = 5;
+    public static final int YEAR = 2021;
+    public static final int DAY = 14;
 
     public static void main(String[] args) {
         if (args.length != 2) {
