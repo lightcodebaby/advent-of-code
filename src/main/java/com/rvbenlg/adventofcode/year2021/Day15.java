@@ -5,7 +5,6 @@ import com.rvbenlg.adventofcode.utils.Utilities;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Day15 {
 
@@ -44,8 +43,10 @@ public class Day15 {
     What is the lowest total risk of any path from the top left to the bottom right?
      */
 
-    private Risk[][] risks = new Risk[0][0];
-    private Risk destination = new Risk(0, 0, 0);
+    private int[][] original = new int[0][0];
+    private int[][] modified = new int[0][0];
+    private List<Coordinate> coordinates = new ArrayList<>();
+
 
     public void solve() throws IOException {
         part1();
@@ -53,153 +54,126 @@ public class Day15 {
 
     private void part1() throws IOException {
         List<String> input = Utilities.readInput("year2021/day15.txt");
-        fillRisks(input);
-        fillDestination();
-        List<Path> paths = getAllPaths();
-        int result = getLowestTotalRisk(paths);
-        System.out.println("Part 1 solution: " + result);
+        fillMatrixes(input);
+        modifyMatrix();
+        System.out.println("Part 1 solution: " + modified[modified.length-1][modified[modified.length - 1].length - 1]);
     }
 
-    private int getLowestTotalRisk(List<Path> paths) {
-        int lowestRisk = Integer.MAX_VALUE;
-        for (Path path : paths) {
-            int pathRisk = path.totalRisk;
-            if (pathRisk < lowestRisk) {
-                lowestRisk = pathRisk;
+    private void modifyMatrix() {
+        Coordinate origin = coordinates.stream().filter(coordinate -> coordinate.row == 0 && coordinate.column == 0).findFirst().get();
+        List<Coordinate> modified = modifyAdjacents(origin);
+        do {
+            List<Coordinate> newModified = new ArrayList<>();
+            for(Coordinate coordinate : modified) {
+                newModified.addAll(modifyAdjacents(coordinate));
             }
-        }
-        return lowestRisk;
+            modified = newModified;
+        } while(!modified.isEmpty());
     }
 
-    private List<Path> getAllPaths() {
-        List<Path> paths = new ArrayList<>();
-        paths.add(getFirstPath());
-        List<Path> finishedPaths = new ArrayList<>();
-        List<Path> unfinishedPaths = new ArrayList<>(paths);
-        while (!unfinishedPaths.isEmpty()) {
-            for (Path path : unfinishedPaths) {
-                paths.addAll(getNewPaths(path, paths));
-            }
-            paths.removeIf(unfinishedPaths::contains);
-            finishedPaths.addAll(paths.stream().filter(path1 -> !finishedPaths.contains(path1) && path1.pathRisks.get(path1.pathRisks.size() - 1).equals(destination)).collect(Collectors.toList()));
-            unfinishedPaths = paths.stream().filter(path1 -> !finishedPaths.contains(path1) && finishedPaths.stream().noneMatch(finishedPath -> finishedPath.totalRisk <= path1.totalRisk)).collect(Collectors.toList());
+    private List<Coordinate> modifyAdjacents(Coordinate coordinate) {
+        List<Coordinate> modifiedAdjacents = new ArrayList<>();
+        if (canModifyTop(coordinate)) {
+            modifyTop(coordinate);
+            modifiedAdjacents.add(getTopCoordinate(coordinate));
         }
-        return paths;
+        if (canModifyDown(coordinate)) {
+            modifyDown(coordinate);
+            modifiedAdjacents.add(getDownCoordinate(coordinate));
+        }
+        if (canModifyLeft(coordinate)) {
+            modifyLeft(coordinate);
+            modifiedAdjacents.add(getLeftCoordinate(coordinate));
+        }
+        if (canModifyRight(coordinate)) {
+            modifyRight(coordinate);
+            modifiedAdjacents.add(getRightCoordinate(coordinate));
+        }
+        return modifiedAdjacents;
     }
 
-    private List<Path> getNewPaths(Path path, List<Path> paths) {
-        List<Path> newPaths = new ArrayList<>();
-        Risk currentRisk = path.pathRisks.get(path.pathRisks.size() - 1);
-        if (canGoUp(path, paths)) {
-            List<Risk> newPathRisks = new ArrayList<>(path.pathRisks);
-            newPathRisks.add(risks[currentRisk.row - 1][currentRisk.column]);
-            newPaths.add(new Path(newPathRisks, path.totalRisk + risks[currentRisk.row - 1][currentRisk.column].risk));
-        }
-        if (canGoDown(path, paths)) {
-            List<Risk> newPathRisks = new ArrayList<>(path.pathRisks);
-            newPathRisks.add(risks[currentRisk.row + 1][currentRisk.column]);
-            newPaths.add(new Path(newPathRisks, path.totalRisk + risks[currentRisk.row + 1][currentRisk.column].risk));
-        }
-        if (canGoLeft(path, paths)) {
-            List<Risk> newPathRisks = new ArrayList<>(path.pathRisks);
-            newPathRisks.add(risks[currentRisk.row][currentRisk.column - 1]);
-            newPaths.add(new Path(newPathRisks, path.totalRisk + risks[currentRisk.row][currentRisk.column - 1].risk));
-        }
-        if (canGoRight(path, paths)) {
-            List<Risk> newPathRisks = new ArrayList<>(path.pathRisks);
-            newPathRisks.add(risks[currentRisk.row][currentRisk.column + 1]);
-            newPaths.add(new Path(newPathRisks, path.totalRisk + risks[currentRisk.row][currentRisk.column + 1].risk));
-        }
-        return newPaths;
+    private Coordinate getTopCoordinate(Coordinate coordinate) {
+        return coordinates.stream().filter(coordinate1 -> coordinate1.row == coordinate.row - 1 && coordinate1.column == coordinate.column).findFirst().get();
     }
 
-    private boolean canGoUp(Path path, List<Path> paths) {
-        Risk currentRisk = path.pathRisks.get(path.pathRisks.size() - 1);
-        if (currentRisk.row > 0) {
-            Risk nextRisk = risks[currentRisk.row - 1][currentRisk.column];
-            return !path.pathRisks.contains(nextRisk) && paths.stream().noneMatch(path1 -> path1.pathRisks.contains(nextRisk) && path1.totalRisk <= path.totalRisk + nextRisk.risk);
-        } else {
-            return false;
-        }
+    private Coordinate getDownCoordinate(Coordinate coordinate) {
+        return coordinates.stream().filter(coordinate1 -> coordinate1.row == coordinate.row + 1 && coordinate1.column == coordinate.column).findFirst().get();
     }
 
-    private boolean canGoDown(Path path, List<Path> paths) {
-        Risk currentRisk = path.pathRisks.get(path.pathRisks.size() - 1);
-        if (currentRisk.row < risks.length - 1) {
-            Risk nextRisk = risks[currentRisk.row + 1][currentRisk.column];
-            return !path.pathRisks.contains(nextRisk) && paths.stream().noneMatch(path1 -> path1.pathRisks.contains(nextRisk) && path1.totalRisk <= path.totalRisk + nextRisk.risk);
-        } else {
-            return false;
-        }
+    private Coordinate getLeftCoordinate(Coordinate coordinate) {
+        return coordinates.stream().filter(coordinate1 -> coordinate1.row == coordinate.row && coordinate1.column == coordinate.column - 1).findFirst().get();
     }
 
-    private boolean canGoLeft(Path path, List<Path> paths) {
-        Risk currentRisk = path.pathRisks.get(path.pathRisks.size() - 1);
-        if (currentRisk.column > 0) {
-            Risk nextRisk = risks[currentRisk.row][currentRisk.column - 1];
-            return !path.pathRisks.contains(nextRisk) && paths.stream().noneMatch(path1 -> path1.pathRisks.contains(nextRisk) && path1.totalRisk <= path.totalRisk + nextRisk.risk);
-        } else {
-            return false;
-        }
+    private Coordinate getRightCoordinate(Coordinate coordinate) {
+        return coordinates.stream().filter(coordinate1 -> coordinate1.row == coordinate.row && coordinate1.column == coordinate.column + 1).findFirst().get();
     }
 
-    private boolean canGoRight(Path path, List<Path> paths) {
-        Risk currentRisk = path.pathRisks.get(path.pathRisks.size() - 1);
-        if (currentRisk.column < risks[currentRisk.row].length - 1) {
-            Risk nextRisk = risks[currentRisk.row][currentRisk.column + 1];
-            return !path.pathRisks.contains(nextRisk) && paths.stream().noneMatch(path1 -> path1.pathRisks.contains(nextRisk) && path1.totalRisk <= path.totalRisk + nextRisk.risk);
-        } else {
-            return false;
-        }
+    private boolean canModifyTop(Coordinate coordinate) {
+        return coordinate.row > 0
+                && (original[coordinate.row - 1][coordinate.column] == modified[coordinate.row - 1][coordinate.column] ||
+                modified[coordinate.row - 1][coordinate.column] > modified[coordinate.row][coordinate.column] + original[coordinate.row - 1][coordinate.column]);
     }
 
-    private Path getFirstPath() {
-        List<Risk> pathRisks = new ArrayList<>();
-        Risk firstRisk = risks[0][0];
-        pathRisks.add(firstRisk);
-        Path path = new Path(pathRisks, firstRisk.risk);
-        return path;
+    private void modifyTop(Coordinate coordinate) {
+        modified[coordinate.row - 1][coordinate.column] = original[coordinate.row - 1][coordinate.column] + modified[coordinate.row][coordinate.column];
     }
 
-    private void fillRisks(List<String> input) {
-        risks = new Risk[input.size()][];
-        for (int i = 0; i < input.get(0).length(); i++) {
+    private boolean canModifyDown(Coordinate coordinate) {
+        return coordinate.row < original.length - 1
+                && (original[coordinate.row + 1][coordinate.column] == modified[coordinate.row + 1][coordinate.column] ||
+                modified[coordinate.row + 1][coordinate.column] > original[coordinate.row + 1][coordinate.column] + modified[coordinate.row][coordinate.column]);
+    }
+
+    private void modifyDown(Coordinate coordinate) {
+        modified[coordinate.row + 1][coordinate.column] = original[coordinate.row + 1][coordinate.column] + modified[coordinate.row][coordinate.column];
+    }
+
+    private boolean canModifyLeft(Coordinate coordinate) {
+        return coordinate.column > 0
+                && (original[coordinate.row][coordinate.column - 1] == modified[coordinate.row][coordinate.column - 1] ||
+                modified[coordinate.row][coordinate.column - 1] > original[coordinate.row][coordinate.column - 1] + modified[coordinate.row][coordinate.column]);
+    }
+
+    private void modifyLeft(Coordinate coordinate) {
+        modified[coordinate.row][coordinate.column - 1] = original[coordinate.row][coordinate.column - 1] + modified[coordinate.row][coordinate.column];
+    }
+
+    private boolean canModifyRight(Coordinate coordinate) {
+        return coordinate.column < original[0].length - 1
+                && (original[coordinate.row][coordinate.column + 1] == modified[coordinate.row][coordinate.column + 1] ||
+                modified[coordinate.row][coordinate.column + 1] > original[coordinate.row][coordinate.column + 1] + modified[coordinate.row][coordinate.column]);
+    }
+
+    private void modifyRight(Coordinate coordinate) {
+        modified[coordinate.row][coordinate.column + 1] = original[coordinate.row][coordinate.column + 1] + modified[coordinate.row][coordinate.column];
+    }
+
+    private void fillMatrixes(List<String> input) {
+        original = new int[input.size()][];
+        modified = new int[input.size()][];
+        for (int i = 0; i < input.size(); i++) {
             String line = input.get(i);
-            risks[i] = new Risk[line.length()];
+            original[i] = new int[line.length()];
+            modified[i] = new int[line.length()];
             for (int j = 0; j < line.length(); j++) {
-                risks[i][j] = new Risk(i, j, Integer.parseInt(String.valueOf(line.charAt(j))));
+                int value = Integer.parseInt(String.valueOf(line.charAt(j)));
+                original[i][j] = value;
+                modified[i][j] = value;
+                coordinates.add(new Coordinate(i, j));
             }
         }
-        risks[0][0].risk = 0;
+        original[0][0] = 0;
+        modified[0][0] = 0;
     }
 
-    private void fillDestination() {
-        destination = risks[risks.length - 1][risks[risks.length - 1].length - 1];
-    }
 
-    private void resetVariables() {
-        risks = new Risk[0][0];
-    }
-
-    private class Path {
-        List<Risk> pathRisks;
-        int totalRisk;
-
-        private Path(List<Risk> pathRisks, int totalRisk) {
-            this.pathRisks = pathRisks;
-            this.totalRisk = totalRisk;
-        }
-    }
-
-    private class Risk {
+    private class Coordinate {
         int row;
         int column;
-        int risk;
 
-        private Risk(int row, int column, int risk) {
+        private Coordinate(int row, int column) {
             this.row = row;
             this.column = column;
-            this.risk = risk;
         }
     }
 
