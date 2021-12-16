@@ -3,9 +3,7 @@ package com.rvbenlg.adventofcode.year2016;
 import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Day11 {
 
@@ -126,7 +124,7 @@ public class Day11 {
      */
 
     private List<String> input = new ArrayList<>();
-    private String[] elementsPart1 = {"polonium", "thulium", "promethium", "ruthenium", "cobalt", "elerium", "dilithium"};
+    private List<String> elements = new ArrayList<>();
 
     public void solve() throws IOException {
         part1();
@@ -134,14 +132,18 @@ public class Day11 {
     }
 
     private void part1() throws IOException {
+        resetVariables();
         input = Utilities.readInput("year2016/day11.txt");
+        fillElements();
         int steps = useElevator();
         System.out.println("Part 1 solution: " + steps);
     }
 
     private void part2() throws IOException {
+        resetVariables();
         input = Utilities.readInput("year2016/day11.txt");
         updateInput();
+        fillElements();
         int steps = useElevator();
         System.out.println("Part 2 solution: " + steps);
     }
@@ -188,12 +190,30 @@ public class Day11 {
         String[] words = line.split(" ");
         for (int i = 0; i < words.length; i++) {
             if (words[i].contains("generator")) {
-                floor.elements[2 * Arrays.asList(elementsPart1).indexOf(words[i - 1])] = 1;
+                floor.elements[2 * elements.indexOf(words[i - 1])] = 1;
             } else if (words[i].contains("microchip")) {
-                floor.elements[(2 * Arrays.asList(elementsPart1).indexOf(words[i - 1].replaceAll("-compatible", ""))) + 1] = 1;
+                floor.elements[(2 * elements.indexOf(words[i - 1].replaceAll("-compatible", ""))) + 1] = 1;
             }
         }
         return floor;
+    }
+
+    private void fillElements() {
+        Set<String> uniqueElements = new HashSet<>();
+        for (String line : input) {
+            String[] words = line.split(" ");
+            for (int i = 0; i < words.length; i++) {
+                if (words[i].contains("generator")) {
+                    uniqueElements.add(words[i - 1]);
+                }
+            }
+        }
+        elements = new ArrayList<>(uniqueElements);
+    }
+
+    private void resetVariables() {
+        input = new ArrayList<>();
+        elements = new ArrayList<>();
     }
 
     private class Status {
@@ -217,7 +237,7 @@ public class Day11 {
 
         private Floor(int number) {
             this.number = number;
-            this.elements = new int[elementsPart1.length * 2];
+            this.elements = new int[Day11.this.elements.size() * 2];
         }
     }
 
