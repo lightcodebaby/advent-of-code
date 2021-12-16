@@ -3,6 +3,7 @@ package com.rvbenlg.adventofcode.year2016;
 import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,23 +49,29 @@ public class Day25 {
     private List<String> instructions = new ArrayList<>();
     private int firstValue = 0;
     private int lastPrinted = -1;
+    private long lastUpdate = System.currentTimeMillis();
 
     public void solve() throws IOException, InterruptedException {
         part1();
     }
 
-    private void part1() throws IOException, InterruptedException {
+    private void part1() throws IOException {
+        followInstructions();
+        System.out.println("Part 1 solution: " + firstValue);
+    }
+
+    private void followInstructions() throws IOException {
         resetVariables();
-        instructions = Utilities.readInput("year2016/day25.txt");
-        instructions.set(0, "cpy " + firstValue + " a");
+        instructions.add("cpy " + firstValue + " a");
+        instructions.addAll(Utilities.readInput("year2016/day25.txt"));
         int currentInstruction = 0;
-        while (currentInstruction < instructions.size()) {
+        while (currentInstruction < instructions.size() && System.currentTimeMillis() - lastUpdate < 2000) {
             currentInstruction += followInstruction(currentInstruction);
         }
     }
 
 
-    private int followInstruction(int currentInstruction) throws InterruptedException, IOException {
+    private int followInstruction(int currentInstruction) throws IOException {
         int result = 1;
         String instruction = instructions.get(currentInstruction);
         if (isCopyInstruction(instruction)) {
@@ -82,7 +89,8 @@ public class Day25 {
             if (whatToPrint == lastPrinted) {
                 refreshFirstValue();
                 System.out.println("Refreshing first value. New value: " + firstValue);
-                part1();
+                lastUpdate = System.currentTimeMillis();
+                followInstructions();
             } else {
                 lastPrinted = whatToPrint;
             }
