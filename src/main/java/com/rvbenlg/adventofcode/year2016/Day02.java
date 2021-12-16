@@ -79,7 +79,7 @@ public class Day02 {
                 moveUp();
             }
             if (instruction == 'D') {
-                moveUp();
+                moveDown();
             }
             if (instruction == 'L') {
                 moveLeft();
