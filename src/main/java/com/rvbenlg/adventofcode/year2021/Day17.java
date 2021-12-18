@@ -3,6 +3,7 @@ package com.rvbenlg.adventofcode.year2021;
 import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Day17 {
@@ -236,12 +237,35 @@ public class Day17 {
     ....................TTTTTTTTTTT
     ....................TTTTTTTTTTT
     .......................#.......
+
+    --- Part Two ---
+    Maybe a fancy trick shot isn't the best idea; after all, you only have one probe, so you had better not miss.
+
+    To get the best idea of what your options are for launching the probe, you need to find every initial velocity that causes the probe to eventually be within the target area after any step.
+
+    In the above example, there are 112 different initial velocity values that meet these criteria:
+
+    23,-10  25,-9   27,-5   29,-6   22,-6   21,-7   9,0     27,-7   24,-5
+    25,-7   26,-6   25,-5   6,8     11,-2   20,-5   29,-10  6,3     28,-7
+    8,0     30,-6   29,-8   20,-10  6,7     6,4     6,1     14,-4   21,-6
+    26,-10  7,-1    7,7     8,-1    21,-9   6,2     20,-7   30,-10  14,-3
+    20,-8   13,-2   7,3     28,-8   29,-9   15,-3   22,-5   26,-8   25,-8
+    25,-6   15,-4   9,-2    15,-2   12,-2   28,-9   12,-3   24,-6   23,-7
+    25,-10  7,8     11,-3   26,-7   7,1     23,-9   6,0     22,-10  27,-6
+    8,1     22,-8   13,-4   7,6     28,-6   11,-4   12,-4   26,-9   7,4
+    24,-10  23,-8   30,-8   7,0     9,-1    10,-1   26,-5   22,-9   6,5
+    7,5     23,-6   28,-10  10,-2   11,-1   20,-9   14,-2   29,-7   13,-3
+    23,-5   24,-8   27,-9   30,-7   28,-5   21,-10  7,9     6,6     21,-5
+    27,-10  7,2     30,-9   21,-8   22,-7   24,-9   20,-6   6,9     29,-5
+    8,-2    27,-8   30,-5   24,-7
+    How many distinct initial velocity values cause the probe to be within the target area after any step?
      */
 
     private int minX = 0;
     private int minY = 0;
     private int maxX = 0;
     private int maxY = 0;
+    private int highestYValue = 0;
 
     public void solve() throws IOException {
         part1();
@@ -252,35 +276,59 @@ public class Day17 {
         List<String> input = Utilities.readInput("year2021/day17.txt");
         parseTargetArea(input.get(0));
         int lastJumpDistance = getLastJumpDistance();
-        long highestYValue = getHighestYValue(lastJumpDistance);
+        highestYValue = getHighestYValue(lastJumpDistance);
         System.out.println("Part 1 solution: " + highestYValue);
     }
 
     private void part2() {
-        long initialVelocities = getInitialVelocities();
-        int area = (Math.abs(maxX - minX) + 1) * (Math.abs(maxY - minY) + 1);
-        initialVelocities += area;
-        for(int i = 0; i < minX; i++) {
-            int currentXPosition = 0;
-            for(int j = i; j > 0; j--) {
-                currentXPosition += j;
-                if(currentXPosition >= minX && currentXPosition <= maxX) {
-                    initialVelocities += 2;
-                }
-            }
-        }
-        System.out.println();
+        List<Velocity> allVelocities = createAllVelocities();
+        long result = allVelocities.stream().filter(velocity -> isValid(velocity)).count();
+        result += getArea();
+        System.out.println("Part 2 solution: " + result);
     }
 
+    private int getArea() {
+        int xLength = Math.abs(Math.abs(minX) - Math.abs(maxX)) + 1;
+        int yLength = Math.abs(Math.abs(minY) - Math.abs(maxY)) + 1;
+        return xLength * yLength;
+    }
 
-    private long getInitialVelocities() {
-        long result = 0L;
+    private boolean isValid(Velocity velocity) {
+        int posX = 0;
+        int posY = 0;
+        boolean isValid = false;
+        while (!isValid && posY > minY) {
+            posX += velocity.velocityX;
+            posY += velocity.velocityY;
+            if (velocity.velocityX > 0) {
+                velocity.velocityX--;
+            } else if (velocity.velocityX < 0){
+                velocity.velocityX++;
+            }
+            velocity.velocityY--;
+            if (posX >= minX && posX <= maxX
+                    && posY <= maxY && posY >= minY) {
+                isValid = true;
+            }
+        }
+        return isValid;
+    }
+
+    private List<Velocity> createAllVelocities() {
+        List<Velocity> result = new ArrayList<>();
+        int minX = this.minX - 1;
+        int maxY = this.maxY + 1;
+        for (int i = 0; i <= minX; i++) {
+            for (int j = maxY; j <= Math.abs(minY + 1); j++) {
+                result.add(new Velocity(i, j));
+            }
+        }
         return result;
     }
 
-    private long getHighestYValue(int lastJumpDistance) {
-        long result = 0L;
-        for(int i = 0; i < lastJumpDistance; i++) {
+    private int getHighestYValue(int lastJumpDistance) {
+        int result = 0;
+        for (int i = 0; i < lastJumpDistance; i++) {
             result += i;
         }
         return result;
@@ -306,6 +354,16 @@ public class Day17 {
         minY = Integer.parseInt(yParts[0]);
         maxX = Integer.parseInt(xParts[1]);
         maxY = Integer.parseInt(yParts[1]);
+    }
+
+    private class Velocity {
+        int velocityX;
+        int velocityY;
+
+        private Velocity(int velocityX, int velocityY) {
+            this.velocityX = velocityX;
+            this.velocityY = velocityY;
+        }
     }
 
 }
