@@ -282,7 +282,7 @@ public class Day17 {
 
     private void part2() {
         List<Velocity> allVelocities = createAllVelocities();
-        long result = allVelocities.stream().filter(velocity -> isValid(velocity)).count();
+        long result = allVelocities.stream().filter(this::isValid).count();
         result += getArea();
         System.out.println("Part 2 solution: " + result);
     }
