@@ -3,13 +3,10 @@ package com.rvbenlg.adventofcode.year2021;
 import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Day18 {
 
-    private List<Pair> pairs = new ArrayList<>();
-    private int position = 0;
 
     public void solve() throws IOException {
         part1();
@@ -17,86 +14,155 @@ public class Day18 {
 
     private void part1() throws IOException {
         List<String> input = Utilities.readInput("year2021/day18.txt");
-        parsePairs(input);
+        calculateFinalSum(input);
         System.out.println();
     }
 
-    private void parsePairs(List<String> input) {
-        for (String pairDescription : input) {
-            pairs.add(parsePair(pairDescription));
-            position = 0;
+    private String calculateFinalSum(List<String> input) {
+        String currentPair = input.get(0);
+        for (int i = 1; i < input.size(); i++) {
+            String sum = addPairs(currentPair, input.get(i));
+            currentPair = reduce(sum);
         }
-        for(Pair pair : pairs) {
-            boolean explode = shouldExplode(pair, 0);
-            System.out.println();
-        }
+        return currentPair;
     }
 
-    private Pair parsePair(String pairDescription) {
-        Pair firstPair;
-        Pair secondPair;
-        if (pairDescription.substring(position).startsWith("[[")) {
-            position++;
-            firstPair = parsePair(pairDescription);
-        } else {
-            position++;
-            firstPair = new Pair(Integer.parseInt(String.valueOf(pairDescription.charAt(position))), true, false);
-            position++;
-        }
-        if (pairDescription.substring(position).startsWith(",[")) {
-            position++;
-            secondPair = parsePair(pairDescription);
-        } else {
-            position++;
-            secondPair = new Pair(Integer.parseInt(String.valueOf(pairDescription.charAt(position))), false, true);
-            position++;
-        }
-        position++;
-        return new Pair(firstPair, secondPair);
+    private String reduce(String pairDescription) {
+        String oldPairDescription;
+        String reduced = pairDescription;
+        do {
+            oldPairDescription = reduced;
+            reduced = reduceExploding(reduced);
+            reduced = reduceSplitting(reduced);
+        } while (!reduced.equals(oldPairDescription));
+        return reduced;
     }
 
-    private Pair shouldExplode(Pair pair, int subPair) {
-        Pair result = null;
-        if (subPair >= 4) {
-            result = pair;
+    private String reduceSplitting(String pairDescription) {
+        int position = 0;
+        int digits = 0;
+        boolean reduced = false;
+        do {
+            char c = pairDescription.charAt(position);
+            if (c != '[' && c != ',' && c != ']') {
+                digits++;
+            } else {
+                digits = 0;
+            }
+            if (digits >= 2) {
+                pairDescription = split(pairDescription, position);
+                reduced = true;
+            }
+            position++;
+        } while (!reduced && position < pairDescription.length());
+        return pairDescription;
+    }
+
+    private String split(String pairDescription, int position) {
+        String left = pairDescription.substring(0, position - 1);
+        String toReplace = pairDescription.substring(position - 1, position + 1);
+        String right = pairDescription.substring(position + 1);
+        int value = Integer.parseInt(toReplace);
+        int firstValue = value / 2;
+        int secondValue = value % 2 == 0 ? value / 2 : (value / 2) + 1;
+        return left + createPair(firstValue, secondValue) + right;
+    }
+
+    private String reduceExploding(String pairDescription) {
+        int position = 0;
+        int openPairs = 0;
+        boolean reduced = false;
+        do {
+            char c = pairDescription.charAt(position);
+            if (c == '[') {
+                openPairs++;
+            } else if (c == ']') {
+                openPairs--;
+            }
+            if (openPairs > 4) {
+                pairDescription = explode(pairDescription, position);
+                reduced = true;
+            }
+            position++;
+        } while (!reduced && position < pairDescription.length());
+        return pairDescription;
+    }
+
+    private String explode(String pairDescription, int position) {
+        int ends = pairDescription.indexOf("]", position);
+        int[] pair = getPairToExplode(pairDescription, position);
+        String left = modifyLeftPart(pairDescription.substring(0, position), pair[0]);
+        String right = modifyRightPart(pairDescription.substring(ends + 1), pair[1]);
+        return left + "0" + right;
+    }
+
+    private String modifyLeftPart(String pairDescription, int value) {
+        StringBuilder result = new StringBuilder();
+        boolean alreadyModified = false;
+        for (int i = pairDescription.length() - 1; i >= 0; i--) {
+            char c = pairDescription.charAt(i);
+            if (alreadyModified || c == '[' || c == ']' || c == ',') {
+                result.append(c);
+            } else {
+                int oldValue = Integer.parseInt(String.valueOf(c));
+                int newValue = oldValue + value;
+                result.append(new StringBuilder(String.valueOf(newValue)).reverse());
+                alreadyModified = true;
+            }
         }
-        if (pair.firstPair != null && !pair.firstPair.isRegular) {
-            int auxSubPair = subPair + 1;
-            result = shouldExplode(pair.firstPair, auxSubPair);
+        return result.reverse().toString();
+    }
+
+    private String modifyRightPart(String pairDescription, int value) {
+        StringBuilder result = new StringBuilder();
+        boolean alreadyModified = false;
+        for (int i = 0; i < pairDescription.length(); i++) {
+            char c = pairDescription.charAt(i);
+            if (alreadyModified || c == '[' || c == ']' || c == ',') {
+                result.append(c);
+            } else {
+                int oldValue = Integer.parseInt(String.valueOf(c));
+                int newValue = oldValue + value;
+                result.append(newValue);
+                alreadyModified = true;
+            }
         }
-        if (pair.secondPair != null && !pair.secondPair.isRegular) {
-            int auxSubPair = subPair + 1;
-            result = shouldExplode(pair.secondPair, auxSubPair);
+        return result.toString();
+    }
+
+    private int[] getPairToExplode(String pairDescription, int position) {
+        int[] result = new int[2];
+        boolean found = false;
+        for (int i = position; !found; i++) {
+            char c = pairDescription.charAt(i);
+            if (c != '[' && c != ',' && c != ']') {
+                result[0] = Integer.parseInt(pairDescription.substring(i, pairDescription.indexOf(",", i)));
+                result[1] = Integer.parseInt(pairDescription.substring(pairDescription.indexOf(",", i) + 1, pairDescription.indexOf("]", i)));
+                found = true;
+            }
         }
         return result;
     }
 
-
-    private Pair addTwoPairs(Pair firstPair, Pair secondPair) {
-        return new Pair(firstPair, secondPair);
+    private String addPairs(String firstPair, String secondPair) {
+        StringBuilder result = new StringBuilder();
+        result.append("[");
+        result.append(firstPair);
+        result.append(",");
+        result.append(secondPair);
+        result.append("]");
+        return result.toString();
     }
 
-    private class Pair {
-        boolean isRegular;
-        Pair firstPair;
-        Pair secondPair;
-        boolean isLeft;
-        boolean isRight;
-        int value;
-
-        private Pair(Pair firstPair, Pair secondPair) {
-            this.isRegular = false;
-            this.firstPair = firstPair;
-            this.secondPair = secondPair;
-            this.value = Integer.MAX_VALUE;
-        }
-
-        private Pair(int value, boolean isLeft, boolean isRight) {
-            this.isRegular = true;
-            this.value = value;
-            this.isLeft = isLeft;
-            this.isRight = isRight;
-        }
+    private String createPair(int firstValue, int secondValue) {
+        StringBuilder result = new StringBuilder();
+        result.append("[");
+        result.append(firstValue);
+        result.append(",");
+        result.append(secondValue);
+        result.append("]");
+        return result.toString();
     }
+
 
 }
