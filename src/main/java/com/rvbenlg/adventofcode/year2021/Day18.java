@@ -16,26 +16,25 @@ public class Day18 {
 
     private void part1() throws IOException {
         List<String> input = Utilities.readInput("year2021/day18.txt");
-//        String sumResult = calculateFinalSum(input);
-        String sumResult = input.get(0);
+        String sumResult = calculateFinalSum(input);
         int magnitude = calculateMagnitude(sumResult);
-        System.out.println();
+        System.out.println("Part 1 solution: " + magnitude);
     }
 
     private int calculateMagnitude(String sumResult) {
         String regex = "\\[[0-9]+,[0-9]+\\]";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(sumResult);
-        while(matcher.find()) {
+        while (matcher.find()) {
             String toReduce = sumResult.substring(matcher.start(), matcher.end());
             String[] numbers = toReduce.split(",");
             int firstNumber = Integer.parseInt(numbers[0].substring(1));
             int secondNumber = Integer.parseInt(numbers[1].substring(0, numbers[1].length() - 1));
-            int result = (3*firstNumber) + (2*secondNumber);
+            int result = (3 * firstNumber) + (2 * secondNumber);
             sumResult = sumResult.substring(0, matcher.start()) + result + sumResult.substring(matcher.end());
             matcher = pattern.matcher(sumResult);
         }
-        return 0;
+        return Integer.parseInt(sumResult);
     }
 
     private String calculateFinalSum(List<String> input) {
@@ -47,6 +46,8 @@ public class Day18 {
         return currentPair;
     }
 
+
+    //TODO: 8,5,6,8 se convierte en 13,0,14
     private String reduce(String pairDescription) {
         String oldPairDescription;
         String reduced = pairDescription;
