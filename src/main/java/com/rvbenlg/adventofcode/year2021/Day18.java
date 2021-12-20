@@ -4,6 +4,8 @@ import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Day18 {
 
@@ -14,8 +16,26 @@ public class Day18 {
 
     private void part1() throws IOException {
         List<String> input = Utilities.readInput("year2021/day18.txt");
-        calculateFinalSum(input);
+//        String sumResult = calculateFinalSum(input);
+        String sumResult = input.get(0);
+        int magnitude = calculateMagnitude(sumResult);
         System.out.println();
+    }
+
+    private int calculateMagnitude(String sumResult) {
+        String regex = "\\[[0-9]+,[0-9]+\\]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(sumResult);
+        while(matcher.find()) {
+            String toReduce = sumResult.substring(matcher.start(), matcher.end());
+            String[] numbers = toReduce.split(",");
+            int firstNumber = Integer.parseInt(numbers[0].substring(1));
+            int secondNumber = Integer.parseInt(numbers[1].substring(0, numbers[1].length() - 1));
+            int result = (3*firstNumber) + (2*secondNumber);
+            sumResult = sumResult.substring(0, matcher.start()) + result + sumResult.substring(matcher.end());
+            matcher = pattern.matcher(sumResult);
+        }
+        return 0;
     }
 
     private String calculateFinalSum(List<String> input) {
