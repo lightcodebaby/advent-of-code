@@ -30,14 +30,14 @@ public class Day18 {
 
     private int getLargestMagnitude(List<String> input) {
         int result = Integer.MIN_VALUE;
-        for(int i = 0; i < input.size(); i++) {
+        for (int i = 0; i < input.size(); i++) {
             String firstPair = input.get(i);
-            for(int j = 0; j < input.size(); j++) {
-                if(i != j) {
+            for (int j = 0; j < input.size(); j++) {
+                if (i != j) {
                     String secondPair = input.get(j);
                     String sumResult = reduce(addPairs(firstPair, secondPair));
                     int magnitude = calculateMagnitude(sumResult);
-                    if(magnitude > result) {
+                    if (magnitude > result) {
                         result = magnitude;
                     }
                 }
@@ -220,7 +220,7 @@ public class Day18 {
     private String getNumber(String pairDescription, int position) {
         StringBuilder result = new StringBuilder();
         char c = pairDescription.charAt(position);
-        while(c != '[' && c != ']' && c != ',') {
+        while (c != '[' && c != ']' && c != ',') {
             result.append(c);
             position++;
             c = pairDescription.charAt(position);

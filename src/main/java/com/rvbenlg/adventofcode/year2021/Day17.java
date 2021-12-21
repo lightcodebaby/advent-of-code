@@ -302,7 +302,7 @@ public class Day17 {
             posY += velocity.velocityY;
             if (velocity.velocityX > 0) {
                 velocity.velocityX--;
-            } else if (velocity.velocityX < 0){
+            } else if (velocity.velocityX < 0) {
                 velocity.velocityX++;
             }
             velocity.velocityY--;

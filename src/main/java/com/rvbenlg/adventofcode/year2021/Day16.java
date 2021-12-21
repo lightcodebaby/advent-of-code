@@ -174,7 +174,7 @@ public class Day16 {
     private long calculateSumPacketValue(Packet packet) {
         long result = 0L;
         List<Packet> subPackets = getSubPackets(packet);
-        for(Packet subPacket : subPackets) {
+        for (Packet subPacket : subPackets) {
             result += calculatePacketValue(subPacket);
         }
         return result;
@@ -183,7 +183,7 @@ public class Day16 {
     private long calculateProductPacketValue(Packet packet) {
         long result = 1L;
         List<Packet> subPackets = getSubPackets(packet);
-        for(Packet subPacket : subPackets) {
+        for (Packet subPacket : subPackets) {
             result *= calculatePacketValue(subPacket);
         }
         return result;
@@ -192,9 +192,9 @@ public class Day16 {
     private long calculateMinimumPacketValue(Packet packet) {
         long result = Long.MAX_VALUE;
         List<Packet> subPackets = getSubPackets(packet);
-        for(Packet subPacket : subPackets) {
+        for (Packet subPacket : subPackets) {
             long auxValue = calculatePacketValue(subPacket);
-            if(auxValue < result) {
+            if (auxValue < result) {
                 result = auxValue;
             }
         }
@@ -204,9 +204,9 @@ public class Day16 {
     private long calculateMaximumPacketValue(Packet packet) {
         long result = Long.MIN_VALUE;
         List<Packet> subPackets = getSubPackets(packet);
-        for(Packet subPacket : subPackets) {
+        for (Packet subPacket : subPackets) {
             long auxValue = calculatePacketValue(subPacket);
-            if(auxValue > result) {
+            if (auxValue > result) {
                 result = auxValue;
             }
         }
@@ -216,7 +216,7 @@ public class Day16 {
     private long calculateGreaterThanPacketValue(Packet packet) {
         long result = 0L;
         List<Packet> subPackets = getSubPackets(packet);
-        if(calculatePacketValue(subPackets.get(0)) > calculatePacketValue(subPackets.get(1))) {
+        if (calculatePacketValue(subPackets.get(0)) > calculatePacketValue(subPackets.get(1))) {
             result = 1L;
         }
         return result;
@@ -225,7 +225,7 @@ public class Day16 {
     private long calculateLessThanPacketValue(Packet packet) {
         long result = 0L;
         List<Packet> subPackets = getSubPackets(packet);
-        if(calculatePacketValue(subPackets.get(0)) < calculatePacketValue(subPackets.get(1))) {
+        if (calculatePacketValue(subPackets.get(0)) < calculatePacketValue(subPackets.get(1))) {
             result = 1L;
         }
         return result;
@@ -234,7 +234,7 @@ public class Day16 {
     private long calculateEqualsToPacketValue(Packet packet) {
         long result = 0L;
         List<Packet> subPackets = getSubPackets(packet);
-        if(calculatePacketValue(subPackets.get(0)) == calculatePacketValue(subPackets.get(1))) {
+        if (calculatePacketValue(subPackets.get(0)) == calculatePacketValue(subPackets.get(1))) {
             result = 1L;
         }
         return result;

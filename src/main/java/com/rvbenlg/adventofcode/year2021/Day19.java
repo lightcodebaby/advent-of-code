@@ -31,11 +31,11 @@ public class Day19 {
         boolean result = false;
         List<Position> firstPositionRotations = rotate(firstPosition);
         List<Position> secondPositionRotations = rotate(secondPosition);
-        for(int i = 0; i < firstPositionRotations.size() && !result; i++) {
+        for (int i = 0; i < firstPositionRotations.size() && !result; i++) {
             Position firstPositionRotation = firstPositionRotations.get(i);
-            for(int j = 0; j < secondPositionRotations.size() && !result; j++) {
+            for (int j = 0; j < secondPositionRotations.size() && !result; j++) {
                 Position secondPositionRotation = secondPositionRotations.get(i);
-                if(firstPositionRotation.equals(secondPositionRotation)) {
+                if (firstPositionRotation.equals(secondPositionRotation)) {
                     result = true;
                 }
             }
@@ -65,10 +65,10 @@ public class Day19 {
 
     private void parseScanners(List<String> input) {
         Scanner scanner = new Scanner();
-        for(String line : input) {
-            if(line.contains("scanner")) {
+        for (String line : input) {
+            if (line.contains("scanner")) {
                 scanner = new Scanner();
-            } else if(line.isEmpty()) {
+            } else if (line.isEmpty()) {
                 scanners.add(scanner);
             } else {
                 String[] coordinates = line.split(",");

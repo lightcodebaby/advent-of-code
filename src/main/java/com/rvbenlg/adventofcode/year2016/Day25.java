@@ -3,7 +3,6 @@ package com.rvbenlg.adventofcode.year2016;
 import com.rvbenlg.adventofcode.utils.Utilities;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
