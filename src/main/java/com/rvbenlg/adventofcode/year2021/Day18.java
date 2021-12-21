@@ -12,6 +12,7 @@ public class Day18 {
 
     public void solve() throws IOException {
         part1();
+        part2();
     }
 
     private void part1() throws IOException {
@@ -19,6 +20,30 @@ public class Day18 {
         String sumResult = calculateFinalSum(input);
         int magnitude = calculateMagnitude(sumResult);
         System.out.println("Part 1 solution: " + magnitude);
+    }
+
+    private void part2() throws IOException {
+        List<String> input = Utilities.readInput("year2021/day18.txt");
+        int largestMagnitude = getLargestMagnitude(input);
+        System.out.println("Part 2 solution: " + largestMagnitude);
+    }
+
+    private int getLargestMagnitude(List<String> input) {
+        int result = Integer.MIN_VALUE;
+        for(int i = 0; i < input.size(); i++) {
+            String firstPair = input.get(i);
+            for(int j = 0; j < input.size(); j++) {
+                if(i != j) {
+                    String secondPair = input.get(j);
+                    String sumResult = reduce(addPairs(firstPair, secondPair));
+                    int magnitude = calculateMagnitude(sumResult);
+                    if(magnitude > result) {
+                        result = magnitude;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     private int calculateMagnitude(String sumResult) {
@@ -54,7 +79,9 @@ public class Day18 {
         do {
             oldPairDescription = reduced;
             reduced = reduceExploding(reduced);
-            reduced = reduceSplitting(reduced);
+            if (reduced.equals(oldPairDescription)) {
+                reduced = reduceSplitting(reduced);
+            }
         } while (!reduced.equals(oldPairDescription));
         return reduced;
     }
@@ -119,16 +146,19 @@ public class Day18 {
 
     private String modifyLeftPart(String pairDescription, int value) {
         StringBuilder result = new StringBuilder();
+        pairDescription = new StringBuilder(pairDescription).reverse().toString();
         boolean alreadyModified = false;
-        for (int i = pairDescription.length() - 1; i >= 0; i--) {
+        for (int i = 0; i < pairDescription.length(); i++) {
             char c = pairDescription.charAt(i);
             if (alreadyModified || c == '[' || c == ']' || c == ',') {
                 result.append(c);
             } else {
-                int oldValue = Integer.parseInt(String.valueOf(c));
+                String oldNumber = new StringBuilder(getNumber(pairDescription, i)).reverse().toString();
+                int oldValue = Integer.parseInt(oldNumber);
                 int newValue = oldValue + value;
                 result.append(new StringBuilder(String.valueOf(newValue)).reverse());
                 alreadyModified = true;
+                i += (oldNumber.length() - 1);
             }
         }
         return result.reverse().toString();
@@ -142,10 +172,12 @@ public class Day18 {
             if (alreadyModified || c == '[' || c == ']' || c == ',') {
                 result.append(c);
             } else {
-                int oldValue = Integer.parseInt(String.valueOf(c));
+                String oldNumber = getNumber(pairDescription, i);
+                int oldValue = Integer.parseInt(oldNumber);
                 int newValue = oldValue + value;
                 result.append(newValue);
                 alreadyModified = true;
+                i += (oldNumber.length() - 1);
             }
         }
         return result.toString();
@@ -182,6 +214,17 @@ public class Day18 {
         result.append(",");
         result.append(secondValue);
         result.append("]");
+        return result.toString();
+    }
+
+    private String getNumber(String pairDescription, int position) {
+        StringBuilder result = new StringBuilder();
+        char c = pairDescription.charAt(position);
+        while(c != '[' && c != ']' && c != ',') {
+            result.append(c);
+            position++;
+            c = pairDescription.charAt(position);
+        }
         return result.toString();
     }
 

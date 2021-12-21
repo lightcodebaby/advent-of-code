@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 public class Main {
 
     public static final int YEAR = 2021;
-    public static final int DAY = 18;
+    public static final int DAY = 20;
 
     public static void main(String[] args) {
         if (args.length != 2) {
