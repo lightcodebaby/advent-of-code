@@ -1,0 +1,7 @@
+distlib==0.3.7
+filelock==3.13.1
+numpy==1.26.2
+platformdirs==3.11.0
+virtualenv==20.24.6
+black==23.10.1
+pandas==2.1.2
