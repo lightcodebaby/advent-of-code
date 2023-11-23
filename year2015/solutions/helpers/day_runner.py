@@ -15,6 +15,6 @@ class DayRunner:
         module_name = f"solutions.day{self.day}"
         module = importlib.import_module(module_name)
         part1_result = module.Part1(input=self.input).solve()
-        part2_result = module.Part2(input=self.input).solve()
+        # part2_result = module.Part2(input=self.input).solve()
         print(f"Part 1: {part1_result}")
-        print(f"Part 2: {part2_result}")
+        # print(f"Part 2: {part2_result}")
